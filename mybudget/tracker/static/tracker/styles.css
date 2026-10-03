@@ -1,0 +1,30 @@
+:root {
+    /* Couleurs : 5 suffisent, chacune avec un role precis */
+    --fond: #F4F6F8;
+    /* fond general des pages */
+    --surface: #FFFFFF;
+    /* cartes, tableaux, formulaires */
+    --texte: #1C2430;
+    /* texte courant */
+    --revenu: #2F6F4E;
+    /* les entrees d argent */
+    --depense: #B3402F;
+    /* les sorties d argent */
+    --discret: #6B7683;
+    /* dates, mentions secondaires */
+    /* Espacements : toujours des multiples de 8 */
+    --xs: 8px;
+    --s: 16px;
+    --m: 24px;
+    --l: 40px;
+    /* Un seul rayon, une seule ombre, pour tout le site */
+    --rayon: 6px;
+    --ombre: 0 1px 3px rgba(28, 36, 48, 0.12);
+}
+
+.carte {
+    background-color: var(--surface);
+    padding: var(--m);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
