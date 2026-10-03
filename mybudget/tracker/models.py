@@ -18,3 +18,16 @@ class Categorie(models.Model):
         if self.type == self.Type.revenu:
             return "var(--revenu)"
         return "var(--depense)"    
+class Transaction(models.Model):
+    
+    # Les champs
+    libelle = models.CharField(max_length=100)
+    montant = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField()
+    
+    # Les liaisions inter-model
+    categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE)
+    utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.libelle
