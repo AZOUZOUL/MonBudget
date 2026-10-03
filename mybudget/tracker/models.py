@@ -11,7 +11,7 @@ class Categorie(models.Model):
     utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.nom # Affichera le vrai nom dans l'admin Django
+        return self.nom # Affichera le vrai nom dans l'admin Django.
     
     @property
     def couleur(self):
