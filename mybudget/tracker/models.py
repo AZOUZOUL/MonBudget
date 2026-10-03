@@ -18,3 +18,25 @@ class Categorie(models.Model):
         if self.type == self.Type.REVENU:
             return "var(--revenu)"
         return "var(--depense)"    
+class Transaction(models.Model):
+    
+    # Les champs
+    libelle = models.CharField(max_length=120)
+    montant = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField()
+    
+    # Les liaisions inter-model
+    categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE)
+    utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    #Fonction de trie
+    cree_le = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        # Tri automatique : d'abord par la date du budget, 
+        # puis par l'ordre exact de création à égalité de date.
+        # Le symbole "-" permet de trier du plus récent au plus ancien.
+        ordering = ['-date', '-cree_le'] # noqa: RUF012
+    
+    def __str__(self):
+        return self.libelle
