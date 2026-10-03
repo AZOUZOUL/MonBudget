@@ -3,11 +3,11 @@ from django.contrib.auth.models import User
 
 class Categorie(models.Model):
     class Type(models.TextChoices):
-            dépense = 'DEP'
-            revenu = 'REV'
+            DEPENSE = 'DEP'
+            REVENU = 'REV'
             
     nom = models.CharField(max_length=50)
-    type = models.CharField(max_length=3, choices=Type.choices, default=Type.dépense)
+    type = models.CharField(max_length=3, choices=Type.choices, default=Type.DEPENSE)
     utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -15,6 +15,6 @@ class Categorie(models.Model):
     
     @property
     def couleur(self):
-        if self.type == self.Type.revenu:
+        if self.type == self.Type.REVENU:
             return "var(--revenu)"
         return "var(--depense)"    
