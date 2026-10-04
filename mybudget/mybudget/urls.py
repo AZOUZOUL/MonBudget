@@ -15,8 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.contrib.auth import views as auth_views
+from django.urls import include, path
+from tracker import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
+    path("accounts/inscription/", views.inscription, name="inscription"),
+    path(
+        "accounts/connexion/",
+        auth_views.LoginView.as_view(template_name="tracker/connexion.html"),
+        name="connexion",
+    ), # On surcharge la route de connexion pour lui donner VOTRE gabarit HTML
+    path("accounts/", include("django.contrib.auth.urls")),
 ]
