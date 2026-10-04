@@ -17,10 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from tracker import views
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/signup/', views.sign_up, name='sign-up'),
+    path("admin/", admin.site.urls),
+    path("accounts/signup/", views.sign_up, name="sign-up"),
+    path(
+        "accounts/login/",
+        auth_views.LoginView.as_view(template_name="tracker/login.html"),
+        name="login",
+    ), # 2. On surcharge la route de connexion pour lui donner VOTRE gabarit HTML
+    path("accounts/", include("django.contrib.auth.urls")),
 ]
