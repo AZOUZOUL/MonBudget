@@ -22,6 +22,8 @@ from tracker import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.accueil, name="accueil"), # La route racine '/' appelle maintenant votre vue sécurisée
+    path("transactions/add/", views.transaction_create, name="transactions-create"),
+    
     path("accounts/inscription/", views.inscription, name="inscription"),
     path(
         "accounts/connexion/",
