@@ -1,0 +1,9 @@
+<!-- Formulaire de connexion -->
+{% load static %}
+
+<h2>Connexion à Monbuget</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type='submit' value='Se connecter'>
+<p>Pas encore de compte ? <a href="{% url 'signup' %}">Connectez-vous ici</a></p>

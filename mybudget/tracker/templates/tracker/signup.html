@@ -1,0 +1,11 @@
+{% load static %}
+
+<h2> Créer un compte Mon budget </h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="S'inscrire">
+</form>
+
+<p>Déja inscrit ? <a href="{% url 'login' %}"> Connectez-vous ici </a></p>
