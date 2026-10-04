@@ -1,0 +1,18 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+
+<h1>Mon Budget</h1>
+<p>J'ai {{ transactions|length }} transactions.</p>
+
+<p>La liste des transactions</p>
+<!-- TODO : liste des groupes -->
+<ul>
+    {% for transaction in transactions %}
+    <li>
+    {{ transaction }}
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# 💡 Force Django à rediriger vers votre page d'accueil '/' après la connexion
+LOGIN_REDIRECT_URL = "/"
+
 
 # Application definition
 

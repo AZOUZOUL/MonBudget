@@ -21,11 +21,12 @@ from tracker import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", views.accueil, name="accueil"), # La route racine '/' appelle maintenant votre vue sécurisée
     path("accounts/inscription/", views.inscription, name="inscription"),
     path(
         "accounts/connexion/",
         auth_views.LoginView.as_view(template_name="tracker/connexion.html"),
         name="connexion",
-    ), # On surcharge la route de connexion pour lui donner VOTRE gabarit HTML
+    ),  # On surcharge la route de connexion pour lui donner VOTRE gabarit HTML
     path("accounts/", include("django.contrib.auth.urls")),
 ]
