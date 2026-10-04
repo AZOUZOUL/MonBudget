@@ -1,1 +1,12 @@
 <!-- Gabarit de base -->
+{% load static %}
+<html>
+    <head><title>Mon Budget</title></head>
+    <link rel="stylesheet" href="{% static 'tracker/styles.css' %}" />
+    <body>
+
+
+        {% block content %}{% endblock %}
+
+    </body>
+</html>

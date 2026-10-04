@@ -1,6 +1,9 @@
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect, render
+
+from tracker.models import Categorie, Transaction
 
 
 def inscription(request):
@@ -48,3 +51,13 @@ def inscription(request):
                       'tracker/login.html',
                       {'form': form})
 """
+# --- Nouvelle vue du J4 ---
+@login_required
+def accueil(request):
+    # Filtrage pour ne recupéré que les données de l'utilisateur connecté
+    mes_categories = Categorie.objects.filter(utilisateur=request.user)
+    mes_transactions = Transaction.objects.filter(utilisateur=request.user)
+    
+    return render(request,
+                  "tracker/accueil.html",
+                  {'categories': mes_categories, 'transactions': mes_transactions})
