@@ -26,6 +26,6 @@ urlpatterns = [
         "accounts/connexion/",
         auth_views.LoginView.as_view(template_name="tracker/connexion.html"),
         name="connexion",
-    ), # 2. On surcharge la route de connexion pour lui donner VOTRE gabarit HTML
+    ), # On surcharge la route de connexion pour lui donner VOTRE gabarit HTML
     path("accounts/", include("django.contrib.auth.urls")),
 ]
