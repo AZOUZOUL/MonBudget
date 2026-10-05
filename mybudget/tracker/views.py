@@ -68,9 +68,6 @@ def deconnexion(request):
 # --- Nouvelle vue du J4 ---
 @login_required
 def accueil(request):
-    # Filtrage pour ne recupéré que les données de l'utilisateur connecté
-    mes_categories = Categorie.objects.filter(utilisateur=request.user)
-    mes_transactions = Transaction.objects.filter(utilisateur=request.user)
     
     #======                             =======
     #          Calcul du Mois Courant
@@ -86,40 +83,17 @@ def accueil(request):
         date__month=mois_actuel,  # Extrait uniquement le mois en cours
     )
     # Calculs automatiques basés uniquement sur les données du mois filtré
-    entrees_actuelles = sum(t.montant for t in mes_transactions_actuelles if t.montant > 0)
-    depenses_actuelles = sum(abs(t.montant) for t in mes_transactions_actuelles if t.montant < 0)
+    entrees_actuelles = sum(transaction.montant for transaction in mes_transactions_actuelles if transaction.categorie.type == 'REV')
+    depenses_actuelles = sum(transaction.montant for transaction in mes_transactions_actuelles if transaction.categorie.type == "DEP")
     solde_du_mois_actuel = entrees_actuelles - depenses_actuelles
     #======             ======
     #           Fin
     #======             ======
-    
-    # Somme des montants strictement positifs
-    entrees = sum(transaction.montant 
-                    for transaction
-                        in mes_transactions 
-                            if transaction.montant > 0
-                            )
-
-    # Somme des montants strictement négatifs (convertis en positif avec abs() pour l'affichage du bloc)
-    depenses = sum(abs(transaction.montant) 
-                    for transaction 
-                        in mes_transactions 
-                            if transaction.montant < 0
-                            )
-
-    # Solde mathématique du mois
-    solde_du_mois = entrees - depenses
 
     return render(
         request,
         "tracker/accueil.html",
         {
-            "categories": mes_categories,
-            "transactions": mes_transactions,
-            "entrees": entrees,
-            "depenses": depenses,
-            "solde_du_mois": solde_du_mois,
-            
             "transactions_actuelles": mes_transactions_actuelles,
             "entrees_actuelles": entrees_actuelles,
             "depenses_actuelles": depenses_actuelles,
