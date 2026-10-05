@@ -23,7 +23,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # La route racine '/' appelle maintenant votre vue sécurisée
     path("", views.accueil, name="accueil"),
-    path("transactions/add/", views.transaction_create, name="transactions-create"),
+    path("transactions/add/", views.transaction_create, name="transaction-create"),
     path("accounts/inscription/", views.inscription, name="inscription"),
     
     # CORRECTION 1 : On utilise l'adresse attendue par Django /login/ et le name="login"
