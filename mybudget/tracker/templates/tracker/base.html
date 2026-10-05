@@ -1,12 +1,39 @@
-<!-- Gabarit de base -->
 {% load static %}
-<html>
-    <head><title>Mon Budget</title></head>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Budget</title>
+    <!-- Chargement de la feuille de style commune -->
     <link rel="stylesheet" href="{% static 'tracker/styles.css' %}" />
-    <body>
+</head>
+<body>
 
+    <!-- Conteneur principal centré (Taille maximale fixe pour tout le site) -->
+    <div class="conteneur-maquette">
+        
+        <!-- Barre de navigation répétée sur toutes les pages centrales -->
+        <nav class="navigation-barre">
+            <div class="navigation-liens">
+                <span class="nav-brand">MonBudget</span>
 
-        {% block content %}{% endblock %}
+                <!-- Liens de navigation principaux -->
+                <a href="{% url 'accueil' %}" class="nav-lien actif">Tableau de bord</a>
+                <a href="#" class="nav-lien">Transactions</a>
+                <a href="#" class="nav-lien">Stats</a>
+            </div>
+            
+            <!-- Lien de déconnexion sécurisé (J3) -->
+            <a href="{% url 'demander-deconnexion' %}" class="lien-deconnexion">Déconnexion</a>
+        </nav>
 
-    </body>
+        <!-- Zone dynamique où le contenu spécifique de chaque page sera injecté -->
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+    </div>
+
+</body>
 </html>
