@@ -2,8 +2,11 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect, render
+from django.utils import timezone
 
 from tracker.models import Categorie, Transaction
+from tracker.forms import TransactionForm
+
 
 
 def inscription(request):
@@ -20,7 +23,18 @@ def inscription(request):
     return render(request, 
                       'tracker/inscription.html',
                       {"form": form})
+
+@login_required
+def demander_deconnexion(request):
+    return render(request,
+           'tracker/demander_deconnexion.html',)
+
+@login_required
+def deconnexion(request):
+    return render(request,
+                  'tracker/deconnexion.html',)
     
+
 """
     <<< Ceci est le code que je voulais utiliser pour
     créer une conexion personnaliser avant de savoir que ce n'est pas la peine
@@ -54,10 +68,52 @@ def inscription(request):
 # --- Nouvelle vue du J4 ---
 @login_required
 def accueil(request):
-    # Filtrage pour ne recupéré que les données de l'utilisateur connecté
-    mes_categories = Categorie.objects.filter(utilisateur=request.user)
-    mes_transactions = Transaction.objects.filter(utilisateur=request.user)
     
+    #======                             =======
+    #          Calcul du Mois Courant
+    #======                             ========
+    # Détection automatique de la date du jour réelle
+    maintenant = timezone.now()
+    annee_actuelle = maintenant.year
+    mois_actuel = maintenant.month
+    # Filtrage cumulé (Cloisonnement Utilisateur J4 + Mois en cours)
+    mes_transactions_actuelles = Transaction.objects.filter(
+        utilisateur=request.user,
+        date__year=annee_actuelle,  # Extrait uniquement l'année en cours
+        date__month=mois_actuel,  # Extrait uniquement le mois en cours
+    )
+    # Calculs automatiques basés uniquement sur les données du mois filtré
+    entrees_actuelles = sum(transaction.montant for transaction in mes_transactions_actuelles if transaction.categorie.type == 'REV')
+    depenses_actuelles = sum(transaction.montant for transaction in mes_transactions_actuelles if transaction.categorie.type == "DEP")
+    solde_du_mois_actuel = entrees_actuelles - depenses_actuelles
+    #======             ======
+    #           Fin
+    #======             ======
+
+    return render(
+        request,
+        "tracker/accueil.html",
+        {
+            "transactions_actuelles": mes_transactions_actuelles,
+            "entrees_actuelles": entrees_actuelles,
+            "depenses_actuelles": depenses_actuelles,
+            "solde_du_mois_actuel": solde_du_mois_actuel,
+            "date_actuelle": maintenant,
+        },
+    )
+    
+@login_required
+def transaction_create(request):
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, user=request.user)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.utilisateur = request.user
+            transaction.save()
+            return redirect('accueil')
+    else:
+        form = TransactionForm(user=request.user)
+        
     return render(request,
-                  "tracker/accueil.html",
-                  {'categories': mes_categories, 'transactions': mes_transactions})
+                  'tracker/transaction_create.html',
+                  {'form': form})

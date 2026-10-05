@@ -1,0 +1,16 @@
+{% load static %}
+
+<h2>Souhaitez-vous vraiment vous déconnecter ?</h2>
+
+<p>Vous allez fermer votre session active sur MonBudget.</p>
+
+<!-- Choix 1 : Valider et se déconnecter (Envoie la requête POST à Django) -->
+<form method="post" action="{% url 'deconnexion' %}">
+    {% csrf_token %}
+    <input type="submit" value="Oui, me déconnecter">
+</form>
+
+<!-- Choix 2 : Annuler et repartir dans l'accueil -->
+<a href="{% url 'accueil' %}">
+    Non, repartir dans l'accueil
+</a>

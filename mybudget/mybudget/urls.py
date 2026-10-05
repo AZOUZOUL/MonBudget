@@ -21,12 +21,24 @@ from tracker import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.accueil, name="accueil"), # La route racine '/' appelle maintenant votre vue sécurisée
+    # La route racine '/' appelle maintenant votre vue sécurisée
+    path("", views.accueil, name="accueil"),
+    path("transactions/add/", views.transaction_create, name="transaction-create"),
     path("accounts/inscription/", views.inscription, name="inscription"),
+    
+    # CORRECTION 1 : On utilise l'adresse attendue par Django /login/ et le name="login"
+    # CORRECTION 2 : Assurez-vous que votre fichier s'appelle bien "connexion.html" si vous écrivez ceci :
     path(
-        "accounts/connexion/",
+        "accounts/login/",
         auth_views.LoginView.as_view(template_name="tracker/connexion.html"),
-        name="connexion",
-    ),  # On surcharge la route de connexion pour lui donner VOTRE gabarit HTML
+        name="login",
+    ),
+    # La route de déconnexion automatique
+    path(
+        "accounts/demander_deconnexion/",
+        views.demander_deconnexion,
+        name="demander-deconnexion",
+    ),
+    path("accounts/deconnexion/", views.deconnexion, name="deconnexion"),
     path("accounts/", include("django.contrib.auth.urls")),
 ]

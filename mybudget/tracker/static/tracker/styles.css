@@ -28,3 +28,171 @@
     border-radius: var(--rayon);
     box-shadow: var(--ombre);
 }
+
+
+body {
+    background-color: var(--fond);
+    color: var(--texte);
+    font-family: sans-serif;
+    margin: 0;
+    padding: var(--s);
+}
+
+/* --- Structure globale de la maquette --- */
+.conteneur-maquette {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--m);
+}
+
+/* Barre de navigation */
+.navigation-barre {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--s);
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.navigation-liens {
+    display: flex;
+    align-items: center;
+    gap: var(--s);
+}
+
+.nav-brand {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-right: var(--xs);
+}
+
+.nav-lien {
+    color: var(--discret);
+    text-decoration: none;
+    font-size: 0.95em;
+}
+
+.nav-lien.actif {
+    color: var(--texte);
+    font-weight: bold;
+}
+
+.lien-deconnexion {
+    color: var(--depense);
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+/* --- Styles partagés pour l'affichage des données --- */
+.zone-hero {
+    text-align: center;
+    padding: var(--m) 0;
+}
+
+.hero-contexte {
+    color: var(--discret);
+    font-size: 1.1em;
+    margin-bottom: var(--xs);
+}
+
+.hero-chiffre {
+    font-size: 2.8em;
+    font-weight: bold;
+    color: var(--revenu);
+    margin: 0;
+}
+
+.hero-chiffre.negatif {
+    color: var(--depense);
+}
+
+.hero-label {
+    color: var(--discret);
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+    margin-top: var(--xs);
+}
+
+.grille-stats {
+    display: flex;
+    gap: var(--s);
+}
+
+.carte-stat {
+    flex: 1;
+    text-align: center;
+}
+
+.stat-titre {
+    font-size: 0.9em;
+    color: var(--discret);
+    margin-bottom: var(--xs);
+}
+
+.stat-montant {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.stat-montant.revenu-couleur { color: var(--revenu); }
+.stat-montant.depense-couleur { color: var(--depense); }
+
+.historique-entete {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--s);
+}
+
+.historique-titre {
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.bouton-ajouter {
+    background-color: var(--texte);
+    color: var(--surface);
+    border: none;
+    padding: var(--xs) var(--s);
+    border-radius: var(--rayon);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.liste-lignes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s);
+}
+
+.ligne-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--xs);
+    border-bottom: 1px solid var(--fond);
+}
+
+.ligne-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.ligne-libelle {
+    font-weight: bold;
+}
+
+.ligne-categorie {
+    font-size: 0.85em;
+    color: var(--discret);
+}
+
+.ligne-montant {
+    font-weight: bold;
+}
+
+.ligne-montant.positif { color: var(--revenu); }
+.ligne-montant.negatif { color: var(--depense); }
