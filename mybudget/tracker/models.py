@@ -17,7 +17,8 @@ class Categorie(models.Model):
     def couleur(self):
         if self.type == self.Type.REVENU:
             return "var(--revenu)"
-        return "var(--depense)"    
+        return "var(--depense)"   
+    
 class Transaction(models.Model):
     
     # Les champs
