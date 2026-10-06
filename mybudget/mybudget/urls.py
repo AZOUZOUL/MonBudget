@@ -23,6 +23,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # La route racine '/' appelle maintenant votre vue sécurisée
     path("", views.accueil, name="accueil"),
+    path("transactions/", views.transactions, name="transactions"),
     path("transactions/ajouter/", views.transaction_create, name="transaction-create"),
     path("transactions/<int:pk>/modifier", views.transaction_update, name = "transaction-update"),
     path("transactions/<int:pk>/supprimer", views.transaction_delete, name = "transaction-delete")  ,
