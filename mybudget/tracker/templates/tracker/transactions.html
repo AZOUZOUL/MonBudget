@@ -1,0 +1,54 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<h2>Toutes mes transactions par catégories</h2>
+
+{% for categorie in categories %}
+    <!-- On n'affiche le bloc que si la catégorie contient au moins une transaction -->
+    {% if categorie.transaction_set.all %}
+    <div class="bloc-categorie">
+        
+        <!-- En-tête coloré dynamiquement grâce à la propriété .couleur du J2 -->
+        <div class="categorie-entete" style="background-color: {{ categorie.couleur }};">
+            {{ categorie.nom }} ({% if categorie.type == 'REV' %}Entrées{% else %}Dépenses{% endif %})
+        </div>
+        
+        <!-- Corps contenant la liste des transactions -->
+        <div class="categorie-corps">
+            {% for transaction in categorie.transaction_set.all %}
+            <div class="ligne-transaction-complete">
+            
+                <div class="zone-gauche-interactive">
+                    <span class="finance-libelle">{{ transaction.libelle }}</span>
+
+                    <!-- Les boutons d'action À la GAUCHE-CENTRE -->
+                    <div class="zone-controles">
+                        <p class="bloc-modif">
+                            <a href="{% url 'transaction-update' transaction.pk %}" class="btn-action modif" >Modifier</a>
+                        </p>
+                        <p class="bloc-suppr">
+                            <a href="{% url 'transaction-delete' transaction.pk %}" class="btn-action suppr">Supprimer</a>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Zone droite : Le libellé et le montant de l'opération -->
+                <div class="zone-infos-finances">
+                    <span class="finance-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
+                        {% if transaction.categorie.type == 'REV' %}+ {% else %}- {% endif %}{{ transaction.montant }} F CFA
+                    </span>
+                </div>
+                
+            </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+    {% endif %}
+{% empty %}
+    <div class="carte" style="text-align: center;">
+        <p style="color: var(--discret);">Vous n'avez pas encore créé de catégories ou de transactions.</p>
+    </div>
+{% endfor %}
+
+{% endblock %}
