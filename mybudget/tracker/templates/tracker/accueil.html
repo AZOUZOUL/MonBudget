@@ -7,8 +7,8 @@
     <div class="hero-contexte">{{ date_actuelle|date:"F Y" }}</div>
     
     <!-- Application de la classe .negatif si le solde du mois courant est déficitaire -->
-    <h1 class="hero-chiffre {% if solde_du_mois_actuel < 0 %}negatif{% else %}">
-        + {% endif %}{{ solde_du_mois_actuel }} FCFA
+    <h1 class="hero-chiffre {% if solde_du_mois_actuel < 0 %}negatif{% else %}positif{% endif %}">
+        {% if solde_du_mois_actuel < 0 %}{% else %}+{% endif %}{{ solde_du_mois_actuel }} F CFA
     </h1>
     <div class="hero-label">solde du mois</div>
 </div>

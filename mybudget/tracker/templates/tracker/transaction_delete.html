@@ -1,0 +1,23 @@
+{% load static %}
+
+<h2>Confirmer la suppression</h2>
+
+<p>Voulez-vous vraiment supprimer définitivement la transaction suivante ?</p>
+
+<!-- Rappel du sujet : affichage des informations de la ligne à détruire -->
+<ul>
+    <li><strong>Libellé :</strong> {{ transaction.libelle }}</li>
+    <li><strong>Montant :</strong> {{ transaction.montant }} FCFA</li>
+    <li><strong>Categorie :</strong> {{ transaction.categorie }}</li>
+    <li><strong>Date :</strong> {{ transaction.date }}</li>
+</ul>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="submit" value="Oui,supprimer définitivement">
+</form>
+
+<!-- Choix 2 : Annuler et repartir dans l'accueil -->
+<a href="{% url 'transactions' %}">
+    Non, annuler et repartir dans Transactions
+</a>

@@ -1,7 +1,8 @@
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import redirect, render
+from django.contrib import messages
+from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 
 from tracker.models import Categorie, Transaction
@@ -103,6 +104,13 @@ def accueil(request):
     )
     
 @login_required
+def transactions(request):
+    mes_categories = Categorie.objects.filter(utilisateur=request.user)
+    return render(request,
+                  "tracker/transactions.html",
+                  {"categories": mes_categories})
+    
+@login_required
 def transaction_create(request):
     if request.method == 'POST':
         form = TransactionForm(request.POST, user=request.user)
@@ -117,3 +125,40 @@ def transaction_create(request):
     return render(request,
                   'tracker/transaction_create.html',
                   {'form': form})
+
+@login_required
+def transaction_update(request, pk):
+    # Sécurité : On cherche la transaction par son ID (pk) ET on valide qu'elle appartient au connecté
+    transaction = get_object_or_404(Transaction, pk=pk, utilisateur=request.user)
+    
+    if request.method == 'POST':
+        # On passe l'instance existante au formulaire pour que Django pré-remplisse les cases
+        form = TransactionForm(request.POST, instance=transaction, user=request.user)
+        if form.is_valid():
+            form.save()
+            # Notification flash de succès
+            messages.success(request, "La transaction a été modifiée avec succès.")
+            return redirect('transactions')
+        else:
+            # Si le formulaire a échoué
+            messages.error(request, "Échec de la modification. Veuillez vérifier vos données.")
+    else:
+        form = TransactionForm(instance=transaction, user=request.user)
+        
+    return render(request, 'tracker/transaction_update.html', {'form': form, 'transaction': transaction})
+
+@login_required
+def transaction_delete(request, pk):
+    # Sécurité : Idem, impossible de supprimer la ligne d'un autre utilisateur
+    transaction = get_object_or_404(Transaction, pk=pk, utilisateur=request.user)
+
+    if request.method == "POST":
+        # Si l'utilisateur valide le formulaire de confirmation (POST), on supprime
+        transaction.delete()
+        messages.success(request, "La transaction a bien été supprimée.")
+        return redirect("transactions")
+
+    # Si c'est un GET, on affiche simplement la page de confirmation épurée
+    return render(
+        request, "tracker/transaction_delete.html", {"transaction": transaction}
+    )
