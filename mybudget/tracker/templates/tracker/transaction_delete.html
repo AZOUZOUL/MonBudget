@@ -12,8 +12,7 @@
     <li><strong>Date :</strong> {{ transaction.date }}</li>
 </ul>
 
-<!-- Choix 1 : Valider et se déconnecter (Envoie la requête POST à Django) -->
-<form method="post" action="{% url 'deconnexion' %}">
+<form method="post">
     {% csrf_token %}
     <input type="submit" value="Oui,supprimer définitivement">
 </form>
