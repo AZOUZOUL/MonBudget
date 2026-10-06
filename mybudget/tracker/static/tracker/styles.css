@@ -196,3 +196,97 @@ body {
 
 .ligne-montant.positif { color: var(--revenu); }
 .ligne-montant.negatif { color: var(--depense); }
+
+/* --- Styles de la page complète des Transactions --- */
+
+/* Le bloc complet d'une catégorie */
+.bloc-categorie {
+    margin-bottom: var(--l);
+}
+
+/* L'en-tête du bloc utilisant vos variables de couleurs et de rayons */
+.categorie-entete {
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: var(--s);
+    border-radius: var(--rayon) var(--rayon) 0 0;
+    color: var(--surface);
+    /* Texte blanc */
+}
+
+/* Le conteneur de la liste qui s'accroche sous l'en-tête */
+.categorie-corps {
+    background-color: var(--surface);
+    border: 1px solid #E2E8F0;
+    border-top: none;
+    border-radius: 0 0 var(--rayon) var(--rayon);
+    box-shadow: var(--ombre);
+    padding: var(--s);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s);
+}
+
+/* Alignement d'une ligne de transaction (Espace maximum entre la gauche et le montant à droite) */
+.ligne-transaction-complete {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--xs);
+    border-bottom: 1px solid var(--fond);
+}
+
+.ligne-transaction-complete:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* 💡 NOUVEAUTÉ J6 : Regroupe le libellé et les boutons côte à côte tout à gauche */
+.zone-gauche-interactive {
+    display: flex;
+    align-items: center;
+    gap: var(--m);
+    /* Espacement réglementaire de 24px après le libellé */
+}
+
+.finance-libelle {
+    font-weight: 500;
+}
+
+/* Zone boutons de contrôle : Placé immédiatement après le libellé grâce au flex */
+.zone-controles {
+    display: flex;
+    gap: var(--s);
+    /* Espacement de 16px entre Modifier et Supprimer */
+    align-items: center;
+}
+
+.btn-action {
+    text-decoration: none;
+    font-size: 0.85em;
+    /* Légèrement plus discret pour l'intégration */
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+.btn-action.modif {
+    color: var(--discret);
+}
+
+.btn-action.suppr {
+    color: var(--depense);
+}
+
+/* Le montant reste calé de manière étanche tout à droite */
+.finance-montant {
+    font-weight: bold;
+}
+
+.finance-montant.positif {
+    color: var(--revenu);
+}
+
+.finance-montant.negatif {
+    color: var(--depense);
+}
