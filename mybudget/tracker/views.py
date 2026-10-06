@@ -104,6 +104,13 @@ def accueil(request):
     )
     
 @login_required
+def transactions(request):
+    mes_categories = Categorie.objects.filter(utilisateur=request.user)
+    return render(request,
+                  "tracker/transactions.html",
+                  {"categories": mes_categories})
+    
+@login_required
 def transaction_create(request):
     if request.method == 'POST':
         form = TransactionForm(request.POST, user=request.user)
