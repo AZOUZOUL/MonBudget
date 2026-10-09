@@ -1,6 +1,12 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
+
+
+<a href="{% url 'categories' %}" >
+    <input type="button" class="bouton-voir-categories" value="Cliquez ici pour Voir, Modifier ou Supprimer les Categories">
+</a>
+
 <h2>Toutes mes transactions par catégories</h2>
 
 {% for categorie in categories %}

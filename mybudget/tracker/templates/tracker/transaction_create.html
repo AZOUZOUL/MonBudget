@@ -2,13 +2,14 @@
 
 {% block content %}
 
- <h1>Créer une nouvelle transaction</h1>
 
-<form action="" method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Enregistrer la transaction">
-</form>
-<p><a href="{% url 'accueil' %}">Annuller et retourner à l'accueil</a></p>
-
+<div class="carte">
+  <h1>Créer une nouvelle transaction</h1>
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Enregistrer la transaction">
+  </form>
+  <p><a href="{% url 'accueil' %}">Annuller et retourner à l'accueil</a></p>
+</div>
 {% endblock %}
