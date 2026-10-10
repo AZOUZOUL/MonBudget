@@ -1,0 +1,31 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+
+<div class="carte">
+
+    <h2>Confirmer la suppression</h2>
+
+    <p>Voulez-vous vraiment supprimer définitivement la transaction suivante ?</p>
+
+    <!-- Rappel du sujet : affichage des informations de la ligne à détruire -->
+    <ul>
+        <li><strong>Nom :</strong> {{ categorie.nom }}</li>
+        <li><strong>Type :</strong> {{ categorie.type }}</li>
+    </ul>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="Oui,supprimer définitivement">
+    </form>
+
+    <br>
+    <hr>
+
+    <!-- Choix 2 : Annuler et repartir dans l'accueil -->
+    <a href="{% url 'categories' %}">
+        Non, annuler et repartir dans Categories
+    </a>
+</div>
+
+{% endblock %}
