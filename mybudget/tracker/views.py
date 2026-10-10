@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 
 from tracker.models import Categorie, Transaction
-from tracker.forms import TransactionForm
+from tracker.forms import TransactionForm, CategorieForm
 
 
 
@@ -161,4 +161,89 @@ def transaction_delete(request, pk):
     # Si c'est un GET, on affiche simplement la page de confirmation épurée
     return render(
         request, "tracker/transaction_delete.html", {"transaction": transaction}
+    )
+    
+@login_required
+def categories(request):
+    mes_categories = Categorie.objects.filter(utilisateur=request.user)
+    return render(
+        request,
+        "tracker/categories.html",
+        {
+            "categories": mes_categories,
+        },
+    )
+    
+@login_required
+def categorie_create(request):
+    if request.method == "POST":
+        form = CategorieForm(request.POST)
+        if form.is_valid():
+            # commit=False bloque l'enregistrement immédiat en BDD
+            categorie = form.save(commit=False)
+            # Sécurité : On injecte de force l'identité de l'utilisateur connecté
+            categorie.utilisateur = request.user
+            # Sauvegarde définitive en base de données
+            categorie.save()
+
+            # Notification de succès (J6)
+            messages.success(
+                request, f"La catégorie '{categorie.nom}' a été créée avec succès."
+            )
+
+            # Redirection automatique vers la liste des catégories après l'ajout
+            return redirect("categories")
+    else:
+        # Si c'est un GET, on prépare un formulaire de création vierge
+        form = CategorieForm()
+
+    return render(request,
+                  "tracker/categorie_create.html",
+                  {"form": form})
+
+@login_required
+def categorie_update(request, pk):
+    # Impossible de modifier la catégorie d'un autre utilisateur
+    categorie = get_object_or_404(Categorie, pk=pk, utilisateur=request.user)
+
+    if request.method == "POST":
+        form = CategorieForm(request.POST, instance=categorie)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "La catégorie a bien été mise à jour.")
+            return redirect("categories")
+    else:
+        form = CategorieForm(instance=categorie)
+
+    return render(
+        request,
+        "tracker/categorie_update.html",
+        {"form": form, "categorie": categorie},
+    )
+
+@login_required
+def categorie_delete(request, pk):
+    categorie = get_object_or_404(Categorie, pk=pk, utilisateur=request.user)
+
+    # L'élément clé du J7 : On compte le nombre de transactions liées
+    nombre_transactions = categorie.transaction_set.count
+
+    if request.method == "POST":
+        if nombre_transactions > 0:
+            # Refus catégorique si des transactions dépendent de cette catégorie
+            messages.error(
+                request,
+                f"Impossible de supprimer. Cette catégorie contient {nombre_transactions} transaction(s).",
+            )
+            return redirect("categories")
+
+        # Si aucun lien, on valide la suppression
+        categorie.delete()
+        messages.success(request, "La catégorie a bien été supprimée.")
+        return redirect("categories")
+
+    return render(
+        request,
+        "tracker/categorie_delete.html",
+        {"categorie": categorie, "nombre_transactions": nombre_transactions},
     )
