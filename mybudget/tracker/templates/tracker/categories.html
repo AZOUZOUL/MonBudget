@@ -1,0 +1,55 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+
+<div class="historique-entete categories-mini-entete">
+    <h2 class="historique-titre">Toutes mes catégories</h2>
+<!-- Navigation vers la page d'ajout dédiée (J7) -->
+    <a href="{% url 'categorie-create' %}">
+        <input type="button" class="bouton-ajouter" value="+ Ajouter">
+    </a>
+</div>
+
+<br>
+
+{% for categorie in categories %}
+    <!-- On n'affiche le bloc que si la catégorie contient au moins une transaction -->
+    <div class="bloc-categorie">
+        
+        <!-- En-tête coloré dynamiquement grâce à la propriété .couleur du J2 -->
+        <div class="categorie-entete" style="background-color: {{ categorie.couleur }};">
+            {{ categorie.nom }} ({% if categorie.type == 'REV' %}Entrées{% else %}Dépenses{% endif %})            
+        </div>
+        <div class="categorie-corps">
+            <!-- Les boutons d'action À la GAUCHE-CENTRE -->
+            <div class="zone-controles">
+            
+                <a href="{% url 'categorie-update' categorie.pk %}" class="btn-action modif" >Modifier</a>
+            
+                <a href="{% url 'categorie-delete' categorie.pk %}" class="btn-action suppr">Supprimer</a>
+            
+            </div>
+        </div>
+        <!-- Zone droite : Le libellé et le montant de l'opération -->
+        <div class="zone-infos-finances">
+            <br>
+            <em>Cette categorie contient:</em>
+            <span class="finance-montant {% if categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
+                 {{ categorie.transaction_set.count }} Transaction(s)
+            </span>
+        </div>
+
+        
+
+    
+    </div>
+
+    <br>
+
+{% empty %}
+    <div class="carte" style="text-align: center;">
+        <p style="color: var(--discret);">Vous n'avez pas encore créé de catégories.</p>
+    </div>
+{% endfor %}
+
+{% endblock %}

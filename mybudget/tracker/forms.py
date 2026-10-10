@@ -20,4 +20,8 @@ class TransactionForm(forms.ModelForm):
         if user:
             # Filtrer et lui donner que ce qui l'appartient
             self.fields['categorie'].queryset = Categorie.objects.filter(utilisateur=user)
-            
+
+class CategorieForm(forms.ModelForm):
+    class Meta:
+        model = Categorie
+        fields = ('nom', 'type')

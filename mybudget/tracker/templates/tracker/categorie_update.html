@@ -1,0 +1,25 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<div class="carte">
+    <h2>Modifier la categorie</h2>
+    
+    <p>Modifiez les informations ci-dessous pour mettre à jour votre budget.</p>
+
+    <!-- Formulaire POST qui renvoie les données modifiées à la même URL -->
+    <form method="post">
+        {% csrf_token %} 
+        <!-- Django pré-remplit automatiquement les champs grâce à l'instance definit dans la vue -->
+        {{ form.as_p }}
+        
+        <input type="submit" value="Enregistrer les modifications">
+    </form>
+    
+    <br>
+    <hr>
+
+    <p>
+        <a href="{% url 'categories' %}">Annuler et retourner à Categories</a>
+    </p>
+</div>
+{% endblock %}

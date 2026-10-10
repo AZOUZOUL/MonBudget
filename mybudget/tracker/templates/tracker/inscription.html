@@ -1,11 +1,17 @@
-{% load static %}
+{% extends 'tracker/base.html' %}
 
-<h2> Créer un compte Mon budget </h2>
+{% block content %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="S'inscrire">
-</form>
+<div class="carte">
+    <h2> Créer un compte Mon budget </h2>
 
-<p>Déja inscrit ? <a href="{% url 'connexion' %}"> Connectez-vous ici </a></p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="S'inscrire">
+    </form>
+
+    <p>Déja inscrit ? <a href="{% url 'login' %}"> Connectez-vous ici </a></p>
+</div>
+
+{% endblock %}
