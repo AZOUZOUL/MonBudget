@@ -149,10 +149,10 @@ body {
 
 .historique-titre {
     font-size: 1.2em;
-    margin: 0;
 }
 
-.bouton-ajouter {
+.bouton-ajouter,
+.bouton-voir-categories {
     background-color: var(--texte);
     color: var(--surface);
     border: none;
@@ -289,4 +289,11 @@ body {
 
 .finance-montant.negatif {
     color: var(--depense);
+}
+
+.formulaire {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    color: var(--fond);
 }
