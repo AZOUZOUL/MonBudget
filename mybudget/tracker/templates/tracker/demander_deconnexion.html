@@ -1,16 +1,25 @@
-{% load static %}
+{% extends 'tracker/base.html' %}
 
-<h2>Souhaitez-vous vraiment vous déconnecter ?</h2>
+{% block content %}
 
-<p>Vous allez fermer votre session active sur MonBudget.</p>
+<div class="carte">
+    <h2>Souhaitez-vous vraiment vous déconnecter ?</h2>
 
-<!-- Choix 1 : Valider et se déconnecter (Envoie la requête POST à Django) -->
-<form method="post" action="{% url 'deconnexion' %}">
-    {% csrf_token %}
-    <input type="submit" value="Oui, me déconnecter">
-</form>
+    <p>Vous allez fermer votre session active sur MonBudget.</p>
 
-<!-- Choix 2 : Annuler et repartir dans l'accueil -->
-<a href="{% url 'accueil' %}">
-    Non, repartir dans l'accueil
-</a>
+    <!-- Choix 1 : Valider et se déconnecter (Envoie la requête POST à Django) -->
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <input type="submit" value="Oui, me déconnecter">
+    </form>
+
+    <br>
+    <hr>
+
+    <!-- Choix 2 : Annuler et repartir dans l'accueil -->
+    <a href="{% url 'accueil' %}">
+        Non, repartir dans l'accueil
+    </a>
+</div>
+
+{% endblock %}
