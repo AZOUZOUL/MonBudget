@@ -28,6 +28,8 @@ urlpatterns = [
     path("transactions/<int:pk>/modifier", views.transaction_update, name = "transaction-update"),
     path("transactions/<int:pk>/supprimer", views.transaction_delete, name = "transaction-delete")  ,
     
+    path("transactions/list/", views.transaction_list, name="transactions-list"),
+    
     path("categories/", views.categories, name="categories"),
     path("categories/ajouter/", views.categorie_create, name="categorie-create"),
     path("categories/<int:pk>/modifier", views.categorie_update, name = "categorie-update"),

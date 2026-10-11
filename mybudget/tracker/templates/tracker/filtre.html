@@ -1,0 +1,70 @@
+<div class="carte">
+    <h3>Filtres de recherche</h3>
+    
+    <!-- Formulaire GET : il va ajouter les paramètres directement dans l'URL lors du clic -->
+    <form method="get" action="{% url 'transactions-list' %}">
+        
+        <!-- Filtre 1 : Le Type (Entrées / Dépenses) -->
+        <p>
+            <label for="id_type">Type :</label>
+            <select name="type" id="id_type">
+                <option value="">Tous les types</option>
+                <option value="REV" {% if filtre_type == 'REV' %}selected{% endif %}>Entrées</option>
+                <option value="DEP" {% if filtre_type == 'DEP' %}selected{% endif %}>Dépenses</option>
+            </select>
+        </p>
+
+        <!-- Filtre 2 : Les Catégories cloisonnées -->
+        <p>
+            <label for="id_categorie">Catégorie :</label>
+            <select name="categorie" id="id_categorie">
+                <option value="">Toutes les catégories</option>
+                {% for categorie in categories %}
+                    <!-- On convertit le pk en chaîne de caractères pour la comparaison selectionnée -->
+                    <option value="{{ categorie.pk }}" {% if filtre_categorie_id == categorie.pk|slugify %}selected{% endif %}>
+                        {{ categorie.nom }}
+                    </option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <!-- Filtre 3 : Les Mois disponibles en Base de Données
+        
+        <p>
+            <label for="id_mois">Mois :</label>
+            <input type="month" name="mois" id="id_mois" value="{{ filtre_mois }}">
+        </p>
+        -->
+        <p>
+            <label for="id_mois">Période :</label>
+            <select name="mois" id="id_mois">
+                <option value="">Toutes les périodes</option>
+        
+                {% for date_mois in mois_disponibles %}
+                        <!-- 
+                        - value : génère le format "YYYY-MM" attendu par Python (ex: 2026-10)
+                        - texte : affiche le mois en français de manière élégante (ex: Octobre 2026)
+                    -->
+                    <option value="{{ date_mois|date:'Y-m' }}" {% if filtre_mois == date_mois|date:'Y-m' %}selected{% endif %}>
+                        {{ date_mois|date:"F Y" }}
+                    </option>
+                {% endfor %}
+                
+            </select>
+        </p>
+
+        <!-- Boutons d'action via input réglementaires -->
+        <input type="submit" value="Filtrer les résultats">
+        
+        <!-- Bouton pour vider les filtres (un simple lien vers la page de base sans paramètres) -->
+        <a href="{% url 'transactions-list' %}">
+            <input type="button" value="Réinitialiser">
+        </a>
+        <hr>
+        <a href="{% url 'transactions' %}">
+            <input type="button" value="Organiser en fonction des categories">
+        </a>
+    </form>
+</div>
+
+<br>

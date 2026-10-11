@@ -1,0 +1,39 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+
+<!-- On insère le composant de filtrage ici -->
+    {% include 'tracker/filtre.html' %}
+
+<!-- En dessous, votre boucle d'affichage de transactions (soit par bloc, soit brute) -->
+<h2>Résultats de la recherche</h2>
+<div class="carte">
+    <div class="liste-lignes">
+        {% for transaction in transactions %}
+            <!-- La mise en page en ligne que nous avons validée au J6/J7 -->
+            <div class="ligne-transaction-complete">
+                <div class="zone-gauche-interactive">
+                    <!-- En-tête coloré dynamiquement grâce à la propriété .couleur du J2 -->
+                    <div class="categorie-entete" style="background-color: {{ transaction.categorie.couleur }}; border-radius: 0;">
+                        <span class="finance-libelle">{{ transaction.libelle }}</span>
+                    </div>
+                    <!-- <span class="ligne-categorie" style="color: {{ transaction.categorie.couleur }}; font-size: 1em;"><strong>{{ transaction.categorie.nom }}</strong></span> -->
+                    <div class="zone-controles">
+                        <a href="{% url 'transaction-update' transaction.pk %}" class="btn-action modif">Modifier</a>
+                        <a href="{% url 'transaction-delete' transaction.pk %}" class="btn-action suppr">Supprimer</a>
+                    </div>
+                </div>
+                
+                <span class="finance-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
+                    {% if transaction.categorie.type == 'REV' %}+ {% else %}- {% endif %}{{ transaction.montant }} F CFA
+                </span>
+            </div>
+
+        {% empty %}
+            <p style="color: var(--discret); text-align: center; padding: var(--s) 0;">
+                Aucune transaction ne correspond à vos filtres de recherche.
+            </p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
