@@ -2,10 +2,8 @@
 
 {% block content %}
 
-
-<a href="{% url 'categories' %}" >
-    <input type="button" class="bouton-voir-categories" value="Cliquez ici pour Voir, Modifier ou Supprimer les Categories">
-</a>
+<!-- On insère le composant de filtrage ici -->
+    {% include 'tracker/filtre.html' %}
 
 <h2>Toutes mes transactions par catégories</h2>
 
