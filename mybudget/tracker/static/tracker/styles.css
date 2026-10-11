@@ -233,7 +233,8 @@ body {
     justify-content: space-between;
     align-items: center;
     padding-bottom: var(--xs);
-    border-bottom: 1px solid var(--fond);
+    border-bottom: 10px solid var(--fond);
+    
 }
 
 .ligne-transaction-complete:last-child {
@@ -241,7 +242,7 @@ body {
     padding-bottom: 0;
 }
 
-/* 💡 NOUVEAUTÉ J6 : Regroupe le libellé et les boutons côte à côte tout à gauche */
+/* NOUVEAUTÉ J6 : Regroupe le libellé et les boutons côte à côte tout à gauche */
 .zone-gauche-interactive {
     display: flex;
     align-items: center;
