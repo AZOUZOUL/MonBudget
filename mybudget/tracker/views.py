@@ -247,3 +247,48 @@ def categorie_delete(request, pk):
         "tracker/categorie_delete.html",
         {"categorie": categorie, "nombre_transactions": nombre_transactions},
     )
+    
+
+@login_required
+def transaction_list(request):
+    # 1. Sécurité : On part de la liste de base cloisonnée de l'utilisateur connecté
+    transactions_filtrees = Transaction.objects.filter(utilisateur=request.user)
+    
+    # Mois disponibles pour cet utilisateur
+    # .dates('date', 'month', order='DESC') extrait les combinaisons uniques Annee-Mois
+    mois_disponibles = transactions_filtrees.dates('date', 'month', order='DESC')
+
+    
+    # 2. Récupération des paramètres envoyés dans l'URL (?type=...&categorie=...&mois=...)
+    filtre_type = request.GET.get('type')
+    filtre_categorie_id = request.GET.get('categorie')
+    filtre_mois = request.GET.get('mois') # Format attendu : "YYYY-MM"
+
+    # 3. Application cumulative des filtres si les paramètres existent
+    if filtre_type:
+        # On filtre via le type de la catégorie liée (REV ou DEP)
+        transactions_filtrees = transactions_filtrees.filter(categorie__type=filtre_type)
+        
+    if filtre_categorie_id:
+        transactions_filtrees = transactions_filtrees.filter(categorie_id=filtre_categorie_id)
+        
+    if filtre_mois:
+        # Le format "YYYY-MM" (ex: 2026-10) se découpe facilement en deux éléments
+        try:
+            annee, mois = filtre_mois.split('-')
+            transactions_filtrees = transactions_filtrees.filter(date__year=annee, date__month=mois)
+        except ValueError:
+            pass # Si le format de date dans l'URL est corrompu, on ignore le filtre
+
+    # 4. Pour remplir nos listes déroulantes de filtrage dans le HTML
+    mes_categories = Categorie.objects.filter(utilisateur=request.user)
+
+    return render(request, 'tracker/transactions_list.html', {
+        'transactions': transactions_filtrees, # Liste finale filtrée et combinée
+        'categories': mes_categories,
+        'mois_disponibles': mois_disponibles,
+        # On renvoie les filtres actifs pour pré-sélectionner les cases du formulaire HTML
+        'filtre_type': filtre_type,
+        'filtre_categorie_id': filtre_categorie_id,
+        'filtre_mois': filtre_mois,
+    })
