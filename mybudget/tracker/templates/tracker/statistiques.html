@@ -1,0 +1,41 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<h2 class="stat-page-titre">Analyses & Statistiques</h2>
+<p class="stat-page-description">
+    Voici la répartition et le volume financier de vos opérations par catégories.
+</p>
+
+<!-- Grille globale des blocs de catégories analytiques -->
+<div class="stat-grille">
+    {% for cat in categories_analyse %}
+    <div class="carte stat-carte-alignement">
+        
+        <!-- Zone gauche : Identité de la catégorie -->
+        <div class="stat-zone-identite">
+            <!-- Pastille de couleur dynamique basée sur la propriété .couleur du J2 -->
+            <div class="stat-pastille" style="background-color: {{ cat.couleur }};"></div>
+            <div class="stat-details-nom">
+                <strong class="stat-nom-categorie">{{ cat.nom }}</strong>
+                <div class="stat-compteur-operations">
+                    {{ cat.nombre_operations }} opération(s) enregistrée(s)
+                </div>
+            </div>
+        </div>
+
+        <!-- Zone droite : Le volume financier mis en avant (Le sujet) -->
+        <div class="stat-zone-montant">
+            <!-- Coloration dynamique du montant selon le type de la catégorie (REV ou DEP) -->
+            <span class="stat-chiffre {% if cat.type == 'REV' %}couleur-revenu{% else %}couleur-depense{% endif %}">
+                {% if cat.type == 'REV' %}+{% else %}-{% endif %} {{ cat.total_depense|floatformat:2 }} F CFA
+            </span>
+        </div>
+
+    </div>
+    {% empty %}
+    <div class="carte stat-vide">
+        <p>Aucune donnée statistique disponible pour le moment.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

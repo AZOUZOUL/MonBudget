@@ -4,6 +4,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
+from django.db.models import Sum, Count, DecimalField
+from django.db.models.functions import Coalesce
+from decimal import Decimal
 
 from tracker.models import Categorie, Transaction
 from tracker.forms import TransactionForm, CategorieForm
@@ -226,18 +229,9 @@ def categorie_delete(request, pk):
     categorie = get_object_or_404(Categorie, pk=pk, utilisateur=request.user)
 
     # L'élément clé du J7 : On compte le nombre de transactions liées
-    nombre_transactions = categorie.transaction_set.count
-
+    nombre_transactions = categorie.transaction_set.count()
+    
     if request.method == "POST":
-        if nombre_transactions > 0:
-            # Refus catégorique si des transactions dépendent de cette catégorie
-            messages.error(
-                request,
-                f"Impossible de supprimer. Cette catégorie contient {nombre_transactions} transaction(s).",
-            )
-            return redirect("categories")
-
-        # Si aucun lien, on valide la suppression
         categorie.delete()
         messages.success(request, "La catégorie a bien été supprimée.")
         return redirect("categories")
@@ -292,3 +286,18 @@ def transaction_list(request):
         'filtre_categorie_id': filtre_categorie_id,
         'filtre_mois': filtre_mois,
     })
+
+@login_required
+def statistiques(request):
+    
+    # On demande à Django de calculer la somme des transactions,
+    # pour CHAQUE catégorie de l'utilisateur connecté, en une seule requête SQL ultra-rapide.
+    categories_analyse = Categorie.objects.filter(utilisateur=request.user).annotate(
+        total_depense=Coalesce(Sum('transaction__montant'), Decimal('0.00'), output_field=DecimalField()),
+        nombre_operations=Count('transaction'),
+    )
+    
+    return render(request, 
+                  "tracker/statistiques.html",
+                  {'categories_analyse': categories_analyse,
+                  })
