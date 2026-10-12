@@ -298,3 +298,92 @@ body {
     margin: auto;
     color: var(--fond);
 }
+
+/* ==========================================================================
+   JOUR 9 : STYLES DE LA PAGE ANALYSES ET STATISTIQUES
+   ========================================================================== 
+*/
+
+.stat-page-titre {
+    margin-bottom: var(--xs);
+}
+
+.stat-page-description {
+    color: var(--discret);
+    margin-bottom: var(--m);
+}
+
+/* Alignement vertical des cartes avec les espacements réglementaires multiples de 8 */
+.stat-grille {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s);
+    /* Espacement de 16px entre chaque carte */
+}
+
+/* Configuration de la carte pour étirer l'identité à gauche et le montant à droite */
+.stat-carte-alignement {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Zone gauche : Pastille + Textes */
+.stat-zone-identite {
+    display: flex;
+    align-items: center;
+    gap: var(--s);
+    /* Écart de 16px entre la pastille et le texte */
+}
+
+/* Création de la pastille ronde pure sans image */
+.stat-pastille {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    /* Arrondi parfait pour former un cercle */
+    flex-shrink: 0;
+    /* Empêche la pastille de se déformer si le texte est long */
+}
+
+.stat-details-nom {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-nom-categorie {
+    font-size: 1.1em;
+}
+
+.stat-compteur-operations {
+    color: var(--discret);
+    font-size: 0.85em;
+    margin-top: var(--xs);
+}
+
+/* Zone droite : Gros chiffres mis en avant */
+.stat-zone-montant {
+    text-align: right;
+}
+
+.stat-chiffre {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+/* Utilisation stricte de vos jetons de couleurs financiers */
+.stat-chiffre.couleur-revenu {
+    color: var(--revenu);
+}
+
+.stat-chiffre.couleur-depense {
+    color: var(--depense);
+}
+
+/* Carte de secours si la base est vide */
+.stat-vide {
+    text-align: center;
+    padding: var(--l) 0;
+    /* Grand espacement de 40px */
+    color: var(--discret);
+}
