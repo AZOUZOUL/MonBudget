@@ -34,6 +34,8 @@ urlpatterns = [
     path("categories/ajouter/", views.categorie_create, name="categorie-create"),
     path("categories/<int:pk>/modifier", views.categorie_update, name = "categorie-update"),
     path("categories/<int:pk>/supprimer/", views.categorie_delete, name = "categorie-delete")  ,
+    
+    path("analytics/", views.statistiques, name="statistiques"),
 
     path("accounts/inscription/", views.inscription, name="inscription"),
     
