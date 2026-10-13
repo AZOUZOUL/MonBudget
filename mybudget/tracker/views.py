@@ -1,3 +1,4 @@
+import random
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -108,10 +109,10 @@ def accueil(request):
     
 @login_required
 def transactions(request):
-    mes_categories = Categorie.objects.filter(utilisateur=request.user)
+    ma_categorie = Categorie.objects.filter(utilisateur=request.user)
     return render(request,
                   "tracker/transactions.html",
-                  {"categories": mes_categories})
+                  {"categories": ma_categorie})
     
 @login_required
 def transaction_create(request):
@@ -168,12 +169,12 @@ def transaction_delete(request, pk):
     
 @login_required
 def categories(request):
-    mes_categories = Categorie.objects.filter(utilisateur=request.user)
+    ma_categorie = Categorie.objects.filter(utilisateur=request.user)
     return render(
         request,
         "tracker/categories.html",
         {
-            "categories": mes_categories,
+            "categories": ma_categorie,
         },
     )
     
@@ -231,6 +232,8 @@ def categorie_delete(request, pk):
     # L'élément clé du J7 : On compte le nombre de transactions liées
     nombre_transactions = categorie.transaction_set.count()
     
+    transactions = categorie.transaction_set.all()
+    
     if request.method == "POST":
         categorie.delete()
         messages.success(request, "La catégorie a bien été supprimée.")
@@ -239,7 +242,9 @@ def categorie_delete(request, pk):
     return render(
         request,
         "tracker/categorie_delete.html",
-        {"categorie": categorie, "nombre_transactions": nombre_transactions},
+        {"categorie": categorie,
+         "nombre_transactions": nombre_transactions,
+         "transactions": transactions},
     )
     
 
@@ -275,11 +280,11 @@ def transaction_list(request):
             pass # Si le format de date dans l'URL est corrompu, on ignore le filtre
 
     # 4. Pour remplir nos listes déroulantes de filtrage dans le HTML
-    mes_categories = Categorie.objects.filter(utilisateur=request.user)
+    ma_categorie = Categorie.objects.filter(utilisateur=request.user)
 
     return render(request, 'tracker/transactions_list.html', {
         'transactions': transactions_filtrees, # Liste finale filtrée et combinée
-        'categories': mes_categories,
+        'categories': ma_categorie,
         'mois_disponibles': mois_disponibles,
         # On renvoie les filtres actifs pour pré-sélectionner les cases du formulaire HTML
         'filtre_type': filtre_type,
@@ -297,7 +302,36 @@ def statistiques(request):
         nombre_operations=Count('transaction'),
     )
     
+    # Extraction et conversion des données pour Chart.js
+    # On isole uniquement les catégories de type "Dépense" ayant du volume pour le camembert
+    depenses = [categorie for categorie in categories_analyse if categorie.type == Categorie.Type.DEPENSE and categorie.total_depense > 0]
+
+    # Palette de couleurs modernes et harmonieuses pour vos dépenses (style pastel/semi-sombre)
+    palette_couleurs = [
+        '#3498db', '#9b59b6', '#f1c40f', '#e67e22', '#1abc9c',
+        '#e74c3c', '#2c3e50', '#34495e', '#7f8c8d', '#16a085',
+        '#27ae60', '#2980b9', '#8e44ad', '#d35400', '#f39c12'
+    ]
+    # On mélange aléatoirement la palette pour ne pas avoir toujours le même ordre
+    random.shuffle(palette_couleurs)
+    
+    etiquettes = [categorie.nom for categorie in depenses]
+    # Le float() est ici obligatoire car le format JSON ne sait pas lire un objet DecimalField
+    montants = [float(categorie.total_depense) for categorie in depenses]
+
+    couleurs = []
+    for index, categorie in enumerate(depenses):
+        # Le modulo % évite les plantages si vous avez plus de dépenses que de couleurs dans la palette
+        couleur_assignee = palette_couleurs[index % len(palette_couleurs)]
+        couleurs.append(couleur_assignee)
+        
+        # On attache temporairement cette couleur à l'objet pour le gabarit HTML
+        categorie.couleur_graphique = couleur_assignee
+    
     return render(request, 
                   "tracker/statistiques.html",
                   {'categories_analyse': categories_analyse,
+                   'etiquettes': etiquettes,
+                   'montants': montants,
+                   'couleurs': couleurs,
                   })

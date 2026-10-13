@@ -22,9 +22,7 @@
     <div class="alerte-blocage">
         <h2>Action Impossible...</h2>
         <p> La Categorie contient toujours des transactions, veuillez les supprimez d'abord.</p>
-        <a href="{% url 'transactions' %}">
-            <input type="button" class="bouton-ajouter" value="Voir les transactions">
-        </a>
+
     </div>
     {% endif %}
 
@@ -37,4 +35,43 @@
     </a>
 </div>
 
+<br>
+
+<div class="carte">
+    <h4>Veuillez supprimer ces opérations avant de détruire la catégorie :</h4>
+    <div class="categorie-corps" style="background-color: #cccccc;">
+        {% for transaction in categorie.transaction_set.all %}
+            <div class="ligne-transaction-complete">
+            
+                <div class="zone-gauche-interactive">
+                    <span class="finance-libelle">{{ transaction.libelle }}</span>
+
+                    <!-- Les boutons d'action À la GAUCHE-CENTRE -->
+                    <div class="zone-controles">
+                        <p class="bloc-modif">
+                            <a href="{% url 'transaction-update' transaction.pk %}" class="btn-action modif" >Modifier</a>
+                        </p>
+                        <p class="bloc-suppr">
+                            <a href="{% url 'transaction-delete' transaction.pk %}" class="btn-action suppr">Supprimer</a>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Zone droite : Le libellé et le montant de l'opération -->
+                <div class="zone-infos-finances">
+                    <span class="finance-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
+                        {% if transaction.categorie.type == 'REV' %}+ {% else %}- {% endif %}{{ transaction.montant }} F CFA
+                    </span>
+                </div>
+                
+            </div>
+        {% endfor %}
+
+    </div>
+    <br>
+        <a href="{% url 'transactions' %}">
+            <input type="button" class="bouton-ajouter" value="Voir toutes les transactions">
+        </a>
+
+</div>
 {% endblock %}

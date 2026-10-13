@@ -9,7 +9,12 @@ class Categorie(models.Model):
     nom = models.CharField(max_length=50)
     type = models.CharField(max_length=3, choices=Type.choices, default=Type.DEPENSE)
     utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    
+    cree_le = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-cree_le'] # noqa: RUF012
+        
     def __str__(self):
         return self.nom # Affichera le vrai nom dans l'admin Django.
     
