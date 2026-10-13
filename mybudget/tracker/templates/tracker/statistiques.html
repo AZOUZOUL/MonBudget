@@ -1,4 +1,5 @@
 {% extends 'tracker/base.html' %}
+{% load static %}
 
 {% block content %}
 <h2 class="stat-page-titre">Analyses & Statistiques</h2>
@@ -6,19 +7,32 @@
     Voici la répartition et le volume financier de vos opérations par catégories.
 </p>
 
+<!-- Sécurisation des données conforme à la consigne (Évite les failles XSS) -->
+{{ etiquettes|json_script:"donnees-etiquettes" }}
+{{ montants|json_script:"donnees-montants" }}
+{{ couleurs|json_script:"donnees-couleurs" }}
+
+<!-- Cadre d'affichage du graphique Chart.js -->
+<div class="cadre-graphique">
+    <canvas id="graphique-categories"></canvas>
+</div>
+
+<br>
+
 <!-- Grille globale des blocs de catégories analytiques -->
 <div class="stat-grille">
-    {% for cat in categories_analyse %}
+    {% for categorie in categories_analyse %}
     <div class="carte stat-carte-alignement">
         
         <!-- Zone gauche : Identité de la catégorie -->
         <div class="stat-zone-identite">
             <!-- Pastille de couleur dynamique basée sur la propriété .couleur du J2 -->
-            <div class="stat-pastille" style="background-color: {{ cat.couleur }};"></div>
+            <div class="stat-pastille" 
+                style="background-color: {% if categorie.type == 'DEP' and categorie.total_depense > 0 %}{{ categorie.couleur_graphique }};{% else %}{{ categorie.couleur }};{% endif %}"></div>
             <div class="stat-details-nom">
-                <strong class="stat-nom-categorie">{{ cat.nom }}</strong>
+                <strong class="stat-nom-categorie"> {{ categorie.nom }} </strong> {% if categorie.type == 'REV' %} <em>(Non representer sur le graphique)</em> {% endif %}
                 <div class="stat-compteur-operations">
-                    {{ cat.nombre_operations }} opération(s) enregistrée(s)
+                    {{ categorie.nombre_operations }} opération(s) enregistrée(s)
                 </div>
             </div>
         </div>
@@ -26,8 +40,8 @@
         <!-- Zone droite : Le volume financier mis en avant (Le sujet) -->
         <div class="stat-zone-montant">
             <!-- Coloration dynamique du montant selon le type de la catégorie (REV ou DEP) -->
-            <span class="stat-chiffre {% if cat.type == 'REV' %}couleur-revenu{% else %}couleur-depense{% endif %}">
-                {% if cat.type == 'REV' %}+{% else %}-{% endif %} {{ cat.total_depense|floatformat:2 }} F CFA
+            <span class="stat-chiffre {% if categorie.type == 'REV' %}couleur-revenu{% else %}couleur-depense{% endif %}">
+                {% if categorie.type == 'REV' %}+{% else %}-{% endif %} {{ categorie.total_depense|floatformat:2 }} F CFA
             </span>
         </div>
 
@@ -38,4 +52,25 @@
     </div>
     {% endfor %}
 </div>
+
+<script src="{% static 'tracker/chart.umd.js' %}"></script>
+<script>
+    const etiquettes = JSON.parse(
+        document.getElementById("donnees-etiquettes").textContent);
+    const montants = JSON.parse(
+        document.getElementById("donnees-montants").textContent);
+    const couleurs = JSON.parse(
+        document.getElementById("donnees-couleurs").textContent);
+    new Chart(document.getElementById("graphique-categories"), {
+        type: "doughnut",
+        data: {
+            labels: etiquettes,
+            datasets: [{ data: montants, backgroundColor: couleurs }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
 {% endblock %}
