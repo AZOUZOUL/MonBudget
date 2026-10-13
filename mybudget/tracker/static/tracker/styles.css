@@ -387,3 +387,12 @@ body {
     /* Grand espacement de 40px */
     color: var(--discret);
 }
+
+/* --- Cadre de dimensionnement pour le graphique en anneau du J10 --- */
+.cadre-graphique {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    /* Donne une hauteur fixe et élégante au canevas */
+    margin: var(--m) 0;
+}
