@@ -1,65 +1,106 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
-<!-- Le gros chiffre central (Sujet principal de la maquette) -->
-<div class="zone-hero">
-    <!-- Rendu dynamique automatique de la date contextuelle (ex: Octobre 2026) -->
-    <div class="hero-contexte">{{ date_actuelle|date:"F Y" }}</div>
+
+<div class="page-dashboard">
+    <!-- Le gros chiffre central (Sujet principal de la maquette) -->
+    <div class="zone-hero">
+        <!-- Rendu dynamique automatique de la date contextuelle (ex: Octobre 2026) -->
+        <div class="hero-contexte">{{ date_actuelle|date:"F Y"|capfirst }}</div>
     
-    <!-- Application de la classe .negatif si le solde du mois courant est déficitaire -->
-    <h1 class="hero-chiffre {% if solde_du_mois_actuel < 0 %}negatif{% else %}positif{% endif %}">
-        {% if solde_du_mois_actuel < 0 %}{% else %}+{% endif %}{{ solde_du_mois_actuel }} F CFA
-    </h1>
-    <div class="hero-label">solde du mois</div>
-</div>
-
-<!-- Blocs Entrées / Dépenses côte à côte utilisant vos cartes -->
-<div class="grille-stats">
-    <div class="carte carte-stat">
-        <div class="stat-titre">Entrées</div>
-        <!-- Affichage des entrées exclusives du mois en cours -->
-        <div class="stat-montant revenu-couleur">{{ entrees_actuelles }} F CFA</div>
-    </div>
-    <div class="carte carte-stat">
-        <div class="stat-titre">Dépenses</div>
-        <!-- Affichage des dépenses exclusives du mois en cours -->
-        <div class="stat-montant depense-couleur">{{ depenses_actuelles }} F CFA</div>
-    </div>
-</div>
-
-<br> <!-- Espacement avant l'historique -->
-
-<!-- Section Historique Global -->
-<div class="carte">
-    <div class="historique-entete">
-        <h3 class="historique-titre">Dernières transactions</h3>
-        <!-- Navigation vers la page d'ajout dédiée (J5) -->
-        <a href="{% url 'transaction-create' %}">
-            <input type="button" class="bouton-ajouter" value="+ Ajouter">
-        </a>
+        <!-- Application de la classe .negatif si le solde du mois courant est déficitaire -->
+        <h1 class="hero-chiffre {% if solde_du_mois_actuel < 0 %}negatif{% else %}positif{% endif %}">
+            {% if solde_du_mois_actuel < 0 %}{% else %}+{% endif %}{{ solde_du_mois_actuel }} F CFA
+        </h1>
+        <div class="hero-label">solde du mois</div>
     </div>
 
-    <div class="liste-lignes">
-        {% for transaction in transactions_actuelles %}
-        <div class="transaction-item">
-            <div class="ligne-item">
-                <div class="ligne-details">
-                    <span class="ligne-libelle">{{ transaction.libelle }}</span>
-                    <!-- J2 : ORM Traversée de clé étrangère pour le nom de la catégorie -->
-                    <span class="ligne-categorie">{{ transaction.categorie.nom }}</span>
+    <!-- Blocs Entrées / Dépenses côte à côte utilisant vos cartes -->
+    <div class="grille-stats">
+        <div class="carte carte-stat">
+            <div class="stat-titre">Entrées</div>
+            <!-- Affichage des entrées exclusives du mois en cours -->
+            <div class="stat-montant revenu-couleur">{{ entrees_actuelles }} F CFA</div>
+        </div>
+    
+        <div class="carte carte-stat">
+            <div class="stat-titre">Dépenses</div>
+            <!-- Affichage des dépenses exclusives du mois en cours -->
+            <div class="stat-montant depense-couleur">{{ depenses_actuelles }} F CFA</div>
+        </div>
+    </div>
+
+    <div class="grille-historiques-doubles">
+        <!-- Section Historique Revenues-->
+        <div class="carte">
+            <div class="historique-entete">
+                <h3 class="historique-titre">Dernières Entrées</h3>
+                <!-- Navigation vers la page d'ajout dédiée (J5) -->
+                <a href="{% url 'transaction-revenu-create' %}">
+                    <input type="button" class="bouton-ajouter" value="+ Ajouter des Revenus">
+                </a>
+            </div>
+
+            <div class="liste-lignes">
+                {% for transaction in transactions_actuelles %}
+                {% if transaction.categorie.type == 'REV' %}
+                <div class="transaction-item">
+                    <div class="ligne-item">
+                        <div class="ligne-details">
+                            <span class="ligne-libelle">{{ transaction.libelle }}</span>
+                            <!-- J2 : ORM Traversée de clé étrangère pour le nom de la catégorie -->
+                            <span class="ligne-categorie">{{ transaction.categorie.nom }}</span>
+                        </div>
+                        <!-- Coloration dynamique de la ligne selon le signe du montant -->
+                        <span class="ligne-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
+                            {% if transaction.categorie.type == 'REV' %} + {% else %} - {% endif %}{{ transaction.montant }} F CFA
+                        </span>
+                    </div>
                 </div>
-                <!-- Coloration dynamique de la ligne selon le signe du montant -->
-                <span class="ligne-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
-                    {% if transaction.categorie.type == 'REV' %} + {% else %} - {% endif %}{{ transaction.montant }} F CFA
-                </span>
+                {% endif %}
+                {% empty %}
+                <p style="color: var(--discret); text-align: center; padding: var(--s) 0;">
+                    Aucune Entrée enregistrée.
+                </p>
+                {% endfor %}
             </div>
         </div>
-        {% empty %}
-        <p style="color: var(--discret); text-align: center; padding: var(--s) 0;">
-            Aucune transaction enregistrée.
-        </p>
-        {% endfor %}
+    
+
+        <!-- Section Historique Depenses -->
+        <div class="carte">
+            <div class="historique-entete">
+                <h3 class="historique-titre">Dernières Dépenses</h3>
+                <!-- Navigation vers la page d'ajout dédiée (J5) -->
+                <a href="{% url 'transaction-depense-create' %}">
+                    <input type="button" class="bouton-ajouter" value="+ Ajouter des Dépenses">
+                </a>
+            </div>
+
+            <div class="liste-lignes">
+                {% for transaction in transactions_actuelles %}
+                {% if transaction.categorie.type == 'DEP' %}
+                <div class="transaction-item">
+                    <div class="ligne-item">
+                        <div class="ligne-details">
+                            <span class="ligne-libelle">{{ transaction.libelle }}</span>
+                            <!-- J2 : ORM Traversée de clé étrangère pour le nom de la catégorie -->
+                            <span class="ligne-categorie">{{ transaction.categorie.nom }}</span>
+                        </div>
+                        <!-- Coloration dynamique de la ligne selon le signe du montant -->
+                        <span class="ligne-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
+                            {% if transaction.categorie.type == 'REV' %} + {% else %} - {% endif %}{{ transaction.montant }} F CFA
+                        </span>
+                    </div>
+                </div>
+                {% endif %}
+                {% empty %}
+                <p style="color: var(--discret); text-align: center; padding: var(--s) 0;">
+                    Aucune transaction enregistrée.
+                </p>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
-
 {% endblock %}
