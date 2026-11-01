@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Mon Budget</title>
+    <link rel="icon" type="image/jpeg" href="{% static 'tracker/images/icone.jpg' %}">    
     <!-- Chargement de la feuille de style commune -->
     <link rel="stylesheet" href="{% static 'tracker/styles.css' %}" />
 </head>
@@ -16,13 +17,16 @@
         <!-- Barre de navigation répétée sur toutes les pages centrales -->
         <nav class="navigation-barre">
             <div class="navigation-liens">
-                <span class="nav-brand">MonBudget</span>
+                <span class="nav-brand">
+                    <img src="{% static 'tracker/images/icone.jpg' %}" alt=" le logo de l'application" class="nav-logo">
+                    <em><span style="color: var(--depense);">Mon</span><span style="color: var(--revenu)">Budget</span></em>
+                </span>
 
                 <!-- Liens de navigation principaux -->
-                <a href="{% url 'accueil' %}" class="nav-lien actif">Tableau de bord</a>
-                <a href=" {% url 'transactions' %} " class="nav-lien">Transactions</a>
-                <a href="{% url 'categories' %}"  class="nav-lien" >Categories</a>
-                <a href="{% url 'statistiques' %}" class="nav-lien">Stats</a>
+                <a href="{% url 'accueil' %}" class="nav-lien {% if request.resolver_match.url_name == 'accueil' %}actif{% endif %}">Tableau de bord</a>
+                <a href=" {% url 'transactions' %} " class="nav-lien {% if request.resolver_match.url_name == 'transactions' or request.resolver_match.url_name == 'transactions-list' %}actif{% endif %}">Transactions</a>
+                <a href="{% url 'categories' %}"  class="nav-lien {% if request.resolver_match.url_name == 'categories' %}actif{% endif %}" >Categories</a>
+                <a href="{% url 'statistiques' %}" class="nav-lien {% if request.resolver_match.url_name == 'statistiques' %}actif{% endif %}">Stats</a>
             </div>
             
             <!-- Lien de déconnexion sécurisé (J3) -->
@@ -35,6 +39,8 @@
         </main>
 
     </div>
-
+    
+    {% block javascript %}
+    {% endblock %}
 </body>
 </html>

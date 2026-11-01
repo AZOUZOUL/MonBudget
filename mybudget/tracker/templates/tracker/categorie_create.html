@@ -1,13 +1,15 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
-<div class="carte">
+<div class="carte zone-formulaire-etroit">
     <h2>Créer une nouvelle categorie</h2>
     <form action="" method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Enregistrer la categorie">
+    <input type="submit" class="btn-validation-carte" value="Enregistrer la categorie">
     </form>
-    <p><a href="{% url 'categories' %}">Annuller et retourner à la liste</a></p>
+    <p class="bloc-lien-annuler">
+        <a href="{% url 'categories' %}" class="lien-annuler-carte">Annuler et retourner à la liste</a>
+    </p>
 </div>
 {% endblock %}

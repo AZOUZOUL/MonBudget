@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# 💡 Force Django à rediriger vers votre page d'accueil '/' après la connexion
+# Force Django à rediriger vers votre page d'accueil '/' après la connexion
 LOGIN_REDIRECT_URL = "/"
 
 
@@ -106,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-fr'
 
 TIME_ZONE = 'UTC'
 

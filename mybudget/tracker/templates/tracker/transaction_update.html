@@ -1,22 +1,24 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
-<div class="carte">
+<!-- MODIFICATION : Application de la classe 'zone-formulaire-etroit' pour garder la même taille centrée sur PC et Mobile -->
+<div class="carte zone-formulaire-etroit">
     <h2>Modifier la transaction</h2>
     
-    <p>Modifiez les informations ci-dessous pour mettre à jour votre budget.</p>
+    <p style="color: var(--discret); margin-bottom: var(--s);">Modifiez les informations ci-dessous pour mettre à jour votre budget.</p>
 
     <!-- Formulaire POST qui renvoie les données modifiées à la même URL -->
     <form method="post">
         {% csrf_token %} 
-        <!-- Django pré-remplit automatiquement les champs grâce à l'instance definit dans la vue -->
         {{ form.as_p }}
         
-        <input type="submit" value="Enregistrer les modifications">
+        <!-- MODIFICATION : Application de la classe de bouton premium unifiée (.btn-validation-carte) -->
+        <input type="submit" class="btn-validation-carte" value="Enregistrer les modifications">
     </form>
 
-    <p>
-        <a href="{% url 'transactions' %}">Annuler et retourner à Transactions</a>
+    <!-- MODIFICATION : Alignement du lien d'annulation avec la classe dédiée -->
+    <p class="bloc-lien-annuler">
+        <a href="{% url 'transactions' %}" class="lien-annuler-carte">Annuler et retourner à Transactions</a>
     </p>
 </div>
 {% endblock %}

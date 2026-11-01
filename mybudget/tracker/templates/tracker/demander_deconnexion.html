@@ -1,25 +1,24 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
+<!-- MODIFICATION : Utilisation de notre classe de centrage étroite existante -->
+<div class="carte zone-formulaire-etroit">
+    <h2 style="margin-top: 0; color: var(--texte);">Souhaitez-vous vraiment vous déconnecter ?</h2>
 
-<div class="carte">
-    <h2>Souhaitez-vous vraiment vous déconnecter ?</h2>
+    <p style="color: var(--discret); margin-bottom: var(--m);">Vous allez fermer votre session active sur MonBudget.</p>
 
-    <p>Vous allez fermer votre session active sur MonBudget.</p>
-
-    <!-- Choix 1 : Valider et se déconnecter (Envoie la requête POST à Django) -->
-    <form method="post" action="{% url 'login' %}">
+    <form method="post" action="{% url 'deconnexion' %}">
         {% csrf_token %}
-        <input type="submit" value="Oui, me déconnecter">
+        
+        <!-- Réutilisation de notre classe de bouton rouge destructif existant (.btn-depense) -->
+        <input type="submit" class="btn-action btn-depense" style="width: 100%; padding: var(--s);" value="Oui, me déconnecter">
     </form>
 
-    <br>
-    <hr>
-
-    <!-- Choix 2 : Annuler et repartir dans l'accueil -->
-    <a href="{% url 'accueil' %}">
-        Non, repartir dans l'accueil
-    </a>
+    <!-- MODIFICATION : Remplacement du <hr> par un bouton d'annulation gris propre (.btn-mixte) -->
+    <div style="margin-top: var(--s); text-align: center;">
+        <a href="{% url 'accueil' %}" class="btn-action btn-mixte" style="display: block; padding: var(--s);">
+            Non, repartir dans l'accueil
+        </a>
+    </div>
 </div>
-
 {% endblock %}

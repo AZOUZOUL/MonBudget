@@ -1,55 +1,56 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
-
-<div class="historique-entete categories-mini-entete">
-    <h2 class="historique-titre">Toutes mes catégories</h2>
-<!-- Navigation vers la page d'ajout dédiée (J7) -->
-    <a href="{% url 'categorie-create' %}">
+<!-- En-tête de la page harmonisé -->
+<div class="historique-entete categories-mini-entete" style="margin-bottom: var(--s);">
+    <h2 class="historique-titre" style="font-size: 1.3em; font-weight: 700; color: var(--texte);">Toutes mes catégories</h2>
+    <!-- Navigation vers la page d'ajout dédiée -->
+    <a href="{% url 'categorie-create' %}" style="text-decoration: none;">
         <input type="button" class="bouton-ajouter" value="+ Ajouter">
     </a>
 </div>
 
-<br>
+<!-- Conteneur de carte pour regrouper proprement toute la liste -->
+<div class="carte" style="padding: var(--s) !important;">
+    <div class="liste-lignes">
+        {% for categorie in categories %}
+            
+            <div class="ligne-item" style="padding: var(--s); margin-bottom: var(--xs); display: flex; justify-content: space-between; align-items: center; background-color: var(--fond); border-radius: 0 var(--rayon) var(--rayon) 0;">
+                
+                <!-- Zone gauche : Identité de la catégorie et ses outils de contrôle -->
+                <div class="zone-gauche-interactive" style="display: flex; flex-direction: column; gap: 4px;">
+                    
+                    <div style="display: flex; align-items: center; gap: var(--xs); flex-wrap: wrap;">
+                        <!-- Le nom de la catégorie en gras -->
+                        <span class="ligne-libelle" style="font-size: 1.05em;">{{ categorie.nom }}</span>
+                        
+                        <span style="background-color: {{ categorie.couleur }}; color: var(--surface); font-size: 0.75em; font-weight: bold; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            {{ categorie.get_type_display }}
+                        </span>
+                    </div>
 
-{% for categorie in categories %}
-    <!-- On n'affiche le bloc que si la catégorie contient au moins une transaction -->
-    <div class="bloc-categorie">
-        
-        <!-- En-tête coloré dynamiquement grâce à la propriété .couleur du J2 -->
-        <div class="categorie-entete" style="background-color: {{ categorie.couleur }};">
-            {{ categorie.nom }} ({% if categorie.type == 'REV' %}Entrées{% else %}Dépenses{% endif %})            
-        </div>
-        <div class="categorie-corps">
-            <!-- Les boutons d'action À la GAUCHE-CENTRE -->
-            <div class="zone-controles">
-            
-                <a href="{% url 'categorie-update' categorie.pk %}" class="btn-action modif" >Modifier</a>
-            
-                <a href="{% url 'categorie-delete' categorie.pk %}" class="btn-action suppr">Supprimer</a>
-            
+                    <!-- Les boutons d'action Modifier et Supprimer alignés en dessous -->
+                    <div class="zone-controles" style="margin-top: var(--xs);">
+                        <a href="{% url 'categorie-update' categorie.pk %}" class="btn-action modif">Modifier</a>
+                        <a href="{% url 'categorie-delete' categorie.pk %}" class="btn-action suppr">Supprimer</a>
+                    </div>
+                </div>
+
+                <!-- Zone droite : Le compteur d'opérations sécurisé et collé en ligne -->
+                <div class="zone-infos-finances" style="text-align: right; white-space: nowrap; margin-left: var(--s);">
+                    <span class="ligne-montant {% if categorie.type == 'REV' %}positif{% else %}negatif{% endif %}" style="font-size: 0.95em; font-weight: 700;">
+                         {{ categorie.transaction_set.count }} transaction(s)
+                    </span>
+                </div>
+                
             </div>
-        </div>
-        <!-- Zone droite : Le libellé et le montant de l'opération -->
-        <div class="zone-infos-finances">
-            <br>
-            <em>Cette categorie contient:</em>
-            <span class="finance-montant {% if categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
-                 {{ categorie.transaction_set.count }} Transaction(s)
-            </span>
-        </div>
-
-        
-
-    
+            
+        {% empty %}
+            <!-- Affichage si aucune catégorie n'est encore enregistrée -->
+            <p style="color: var(--discret); text-align: center; padding: var(--m) 0; margin: 0; font-size: 0.95em;">
+                Vous n'avez pas encore créé de catégories.
+            </p>
+        {% endfor %}
     </div>
-
-    <br>
-
-{% empty %}
-    <div class="carte" style="text-align: center;">
-        <p style="color: var(--discret);">Vous n'avez pas encore créé de catégories.</p>
-    </div>
-{% endfor %}
-
+</div>
 {% endblock %}

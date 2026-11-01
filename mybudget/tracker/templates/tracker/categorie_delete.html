@@ -1,77 +1,97 @@
 {% extends 'tracker/base.html' %}
+{% load static %}
 
 {% block content %}
 
-<div class="carte">
+<div class="carte zone-formulaire-etroit">
     {% if nombre_transactions == 0 %}
-    <h2>Confirmer la suppression</h2>
+        <h2 style="margin-top: 0; color: var(--depense);">Confirmer la suppression</h2>
 
-    <p>Voulez-vous vraiment supprimer définitivement la transaction suivante ?</p>
+        <p style="color: var(--discret); margin-bottom: var(--s);">Voulez-vous vraiment supprimer définitivement la transaction suivante ?</p>
 
-    <!-- Rappel du sujet : affichage des informations de la ligne à détruire -->
-    <ul>
-        <li><strong>Nom :</strong> {{ categorie.nom }}</li>
-        <li><strong>Type :</strong> {{ categorie.type }}</li>
-    </ul>
+        <!-- Rappel du sujet : affichage des informations de la ligne à détruire -->
+        <div class="suppression-details-box">
+            <div class="suppression-details-ligne">
+                <span class="suppression-label">Nom</span>
+                <span class="suppression-valeur">{{ categorie.nom }}</span>
+            </div>
+            <div class="suppression-details-ligne">
+                <span class="suppression-label">Type</span>
+                <!-- Utilisation native du get_type_display en français comme configuré -->
+                <span class="suppression-valeur">{{ categorie.get_type_display }}</span>
+            </div>
+        </div>
 
-    <form method="post">
-        {% csrf_token %}
-        <input type="submit" value="Oui,supprimer définitivement">
-    </form>
+        <form method="post" style="margin-top: var(--m);">
+            {% csrf_token %}
+            <!-- MODIFICATION : Réutilisation de notre bouton rouge destructif existant (.btn-depense) -->
+            <input type="submit" class="btn-action btn-depense" value="Oui,supprimer définitivement">
+        </form>
     {% else %}
-    <div class="alerte-blocage">
-        <h2>Action Impossible...</h2>
-        <p> La Categorie contient toujours des transactions, veuillez les supprimez d'abord.</p>
-
-    </div>
+        <div class="alerte-blocage-rouge">
+            <h2 style="margin-top: 0; font-size: 1.3em;">Action Impossible...</h2>
+            <p style="margin-bottom: 0; font-size: 0.95em;"> La Categorie contient toujours des transactions, veuillez les supprimez d'abord.</p>
+        </div>
     {% endif %}
 
-    <br>
-    <hr>
-
     <!-- Choix 2 : Annuler et repartir dans l'accueil -->
-    <a href="{% url 'categories' %}">
-        Non, annuler et repartir dans Categories
-    </a>
+    <div style="margin-top: var(--m); text-align: center;">
+        <a href="{% url 'categories' %}">
+            Non, annuler et repartir dans Categories
+        </a>
+    </div>
 </div>
 
-<br>
-
-<div class="carte">
-    <h4>Veuillez supprimer ces opérations avant de détruire la catégorie :</h4>
-    <div class="categorie-corps" style="background-color: #cccccc;">
+<!-- ====================================================================
+     BLOC RAPPEL DES TRANSACTIONS ENCOURS (AFFICHÉ UNIQUEMENT SI BLOQUÉ)
+     ==================================================================== 
+-->
+{% if nombre_transactions > 0 %}
+<div class="carte zone-formulaire-etroit" style="margin-top: var(--m);">
+    <h4 style="margin-top: 0; margin-bottom: var(--s); color: var(--texte);">Veuillez supprimer ces opérations au préalable :</h4>
+    
+    <!-- MODIFICATION : Suppression du fond #cccccc en dur pour réutiliser la structure de liste '.liste-lignes' existante -->
+    <div class="liste-lignes">
         {% for transaction in categorie.transaction_set.all %}
-            <div class="ligne-transaction-complete">
-            
-                <div class="zone-gauche-interactive">
-                    <span class="finance-libelle">{{ transaction.libelle }}</span>
-
-                    <!-- Les boutons d'action À la GAUCHE-CENTRE -->
-                    <div class="zone-controles">
-                        <p class="bloc-modif">
-                            <a href="{% url 'transaction-update' transaction.pk %}" class="btn-action modif" >Modifier</a>
-                        </p>
-                        <p class="bloc-suppr">
-                            <a href="{% url 'transaction-delete' transaction.pk %}" class="btn-action suppr">Supprimer</a>
-                        </p>
+            <!-- Réutilisation exacte de la structure premium développée au J6 -->
+            <div class="ligne-item">
+                <div class="ligne-details">
+                    <span class="ligne-libelle">{{ transaction.libelle }}</span>
+                    <span class="ligne-categorie">{{ transaction.categorie.nom }}</span>
+                    
+                    <!-- Boutons de contrôles instantanés -->
+                    <div class="zone-controles" style="margin-top: var(--xs);">
+                        <a href="{% url 'transaction-update' transaction.pk %}" class="btn-action modif">Modifier</a>
+                        <a href="#" class="btn-action suppr btn-suppr-instant" 
+                           data-url="{% url 'api-transaction-delete-instant' transaction.pk %}">
+                            Supprimer
+                        </a>
                     </div>
                 </div>
                 
-                <!-- Zone droite : Le libellé et le montant de l'opération -->
+                <!-- Zone droite : Montant coloré -->
                 <div class="zone-infos-finances">
-                    <span class="finance-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
+                    <span class="ligne-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
                         {% if transaction.categorie.type == 'REV' %}+ {% else %}- {% endif %}{{ transaction.montant }} F CFA
                     </span>
                 </div>
-                
             </div>
         {% endfor %}
-
     </div>
-    <br>
-        <a href="{% url 'transactions' %}">
-            <input type="button" class="bouton-ajouter" value="Voir toutes les transactions">
-        </a>
 
+    <div style="margin-top: var(--m); text-align: center;">
+        <!-- Réutilisation de votre classe de bouton existante '.bouton-ajouter' -->
+        <a href="{% url 'transactions' %}" style="text-decoration: none;">
+            <input type="button" class="bouton-ajouter" style="width: 100%; padding: var(--s);" value="Voir toutes les transactions">
+        </a>
+    </div>
 </div>
+{% endif %}
+
+{% endblock %}
+
+{% block javascript %}
+    <!-- On passe le jeton CSRF obligatoire pour que le fichier JS externe puisse faire des requêtes POST -->
+    <script>window.csrfToken = "{{ csrf_token }}";</script>
+    <script src="{% static 'tracker/suppression_instantanee.js' %}"></script>
 {% endblock %}
