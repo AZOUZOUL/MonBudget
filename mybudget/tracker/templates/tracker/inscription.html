@@ -1,17 +1,20 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
-
-<div class="carte">
-    <h2> Créer un compte Mon budget </h2>
-
-    <form method="post">
+<div class="carte zone-formulaire-etroit">
+    <h2 style="margin-top: 0; color: var(--texte);">Créer un compte Mon Budget</h2>
+    
+    <!-- Formulaire d'inscription -->
+    <form method="post" novalidate>
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="S'inscrire">
+        
+        <input type="submit" class="btn-validation-carte" value="S'inscrire">
     </form>
 
-    <p>Déja inscrit ? <a href="{% url 'login' %}"> Connectez-vous ici </a></p>
+    <p class="bloc-lien-annuler" style="margin-top: var(--m);">
+        <span style="color: var(--discret); font-size: 0.9em;">Déjà inscrit ?</span> 
+        <a href="{% url 'login' %}" class="lien-annuler-carte" style="margin-left: 4px;">Connectez-vous ici</a>
+    </p>
 </div>
-
 {% endblock %}
