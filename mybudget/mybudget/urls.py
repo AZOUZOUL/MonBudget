@@ -25,32 +25,26 @@ urlpatterns = [
     path("", views.accueil, name="accueil"),
     path("transactions/", views.transactions, name="transactions"),
     path("transactions/ajouter/", views.transaction_create, name="transaction-create"),
-    path("transactions/<int:pk>/modifier", views.transaction_update, name = "transaction-update"),
-    path("transactions/<int:pk>/supprimer", views.transaction_delete, name = "transaction-delete")  ,
-    
+    path("transactions/ajouter/revenu", views.transaction_revenu_create, name="transaction-revenu-create",),
+    path("transactions/ajouter/depense", views.transaction_depense_create, name="transaction-depense-create",),
+    path("transactions/<int:pk>/modifier", views.transaction_update, name="transaction-update",),
+    path("transactions/<int:pk>/supprimer", views.transaction_delete, name="transaction-delete",),
     path("transactions/list/", views.transaction_list, name="transactions-list"),
     
+    path("api/categorie/creer/", views.api_create_categorie, name="api-categorie-create"),
+    path('api/transaction/supprimer-instant/<int:pk>/', views.api_transaction_delete_instant, name='api-transaction-delete-instant'),
+
     path("categories/", views.categories, name="categories"),
     path("categories/ajouter/", views.categorie_create, name="categorie-create"),
-    path("categories/<int:pk>/modifier", views.categorie_update, name = "categorie-update"),
-    path("categories/<int:pk>/supprimer/", views.categorie_delete, name = "categorie-delete"),    
-    path("analytics/", views.statistiques, name="statistiques"),
-
-    path("accounts/inscription/", views.inscription, name="inscription"),
+    path("categories/<int:pk>/modifier", views.categorie_update, name="categorie-update"),
+    path("categories/<int:pk>/supprimer/", views.categorie_delete, name="categorie-delete",),
     
-    # CORRECTION 1 : On utilise l'adresse attendue par Django /login/ et le name="login"
-    # CORRECTION 2 : Assurez-vous que votre fichier s'appelle bien "connexion.html" si vous écrivez ceci :
-    path(
-        "accounts/login/",
-        auth_views.LoginView.as_view(template_name="tracker/connexion.html"),
-        name="login",
-    ),
-    # La route de déconnexion automatique
-    path(
-        "accounts/demander_deconnexion/",
-        views.demander_deconnexion,
-        name="demander-deconnexion",
-    ),
-    path("accounts/deconnexion/", views.deconnexion, name="deconnexion"),
+    path("analytics/", views.statistiques, name="statistiques"),
+    
+    path("accounts/inscription/", views.inscription, name="inscription"),
+    path("accounts/login/", auth_views.LoginView.as_view(template_name="tracker/connexion.html"), name="login",),
+    path("accounts/demander_deconnexion/", views.demander_deconnexion, name="demander-deconnexion",),
+    path("accounts/deconnexion/", auth_views.LogoutView.as_view(next_page="login"), name="deconnexion",),
+    
     path("accounts/", include("django.contrib.auth.urls")),
 ]
