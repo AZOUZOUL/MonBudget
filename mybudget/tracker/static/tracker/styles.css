@@ -18,73 +18,331 @@
     --m: 24px;
     --l: 40px;
     /* Un seul rayon, une seule ombre, pour tout le site */
-    --rayon: 6px;
-    --ombre: 0 1px 3px rgba(28, 36, 48, 0.12);
+    --rayon: 8px;
+    --ombre:0 4px 6px -1px rgba(28, 36, 48, 0.08),
+        0 2px 4px -1px rgba(28, 36, 48, 0.04);
 }
-
-.carte {
-    background-color: var(--surface);
-    padding: var(--m);
-    border-radius: var(--rayon);
-    box-shadow: var(--ombre);
-}
-
 
 body {
     background-color: var(--fond);
     color: var(--texte);
-    font-family: sans-serif;
+    font-family: system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        Roboto,
+        sans-serif;
     margin: 0;
     padding: var(--s);
 }
 
+.carte {
+    background-color: var(--surface);
+    padding: var(--m) var(--l);
+    /* 24px haut/bas, 40px gauche/droite pour un effet premium */
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+    border: 1px solid #E2E8F0;
+    box-sizing: border-box;
+}
+
+/* Limite la largeur des formulaires de création pour un rendu centré et compact (600px max) */
+.zone-formulaire-etroit {
+    max-width: 500px;
+    margin: var(--l) auto;
+    /* Centre la carte avec un grand espace de 40px au-dessus/en-dessous */
+}
+
+/* Espacement et redressement vertical de chaque bloc de champ (Label + Input) */
+.zone-formulaire-etroit form p {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xs);
+    /* 8px d'écart entre l'étiquette et la zone de saisie */
+    margin-bottom: var(--s) !important;
+    /* 16px d'écart fixe entre chaque bloc de saisie */
+}
+
+.zone-formulaire-etroit form label {
+    font-size: 0.85em;
+    font-weight: 700;
+    color: var(--discret);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Modernisation universelle des champs générés par Django dans ce formulaire */
+.zone-formulaire-etroit form input[type="text"],
+.zone-formulaire-etroit form select {
+    padding: var(--xs) var(--s);
+    border: 1px solid #E2E8F0;
+    border-radius: var(--rayon);
+    background-color: var(--fond);
+    color: var(--texte);
+    font-family: inherit;
+    font-size: 0.95em;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Effet interactif propre lorsque l'utilisateur clique pour écrire */
+.zone-formulaire-etroit form input[type="text"]:focus,
+.zone-formulaire-etroit form select:focus {
+    outline: none;
+    border-color: var(--texte);
+    background-color: var(--surface);
+    /* Le champ redevient blanc pur au focus */
+}
+
+/* Le bouton de validation de la carte */
+.btn-validation-carte {
+    width: 100%;
+    background-color: var(--texte);
+    color: var(--surface);
+    border: none;
+    padding: var(--s);
+    border-radius: var(--rayon);
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: var(--s);
+    transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.btn-validation-carte:hover {
+    opacity: 0.9;
+}
+
+.btn-validation-carte:active {
+    transform: scale(0.98);
+}
+
+/* Alignement du lien d'annulation en bas */
+.bloc-lien-annuler {
+    text-align: center;
+    margin-top: var(--m);
+    margin-bottom: 0;
+}
+
+.lien-annuler-carte {
+    color: var(--discret);
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.lien-annuler-carte:hover {
+    color: var(--texte);
+}
+
+.suppression-details-box {
+    background-color: var(--fond);
+    border: 1px solid #E2E8F0;
+    border-radius: var(--rayon);
+    padding: var(--s);
+    display: flex;
+    flex-direction: column;
+    gap: var(--xs);
+}
+
+.suppression-details-ligne {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.suppression-label {
+    font-size: 0.8em;
+    font-weight: 700;
+    color: var(--discret);
+    text-transform: uppercase;
+}
+
+.suppression-valeur {
+    font-weight: 600;
+    color: var(--texte);
+}
+
+.alerte-blocage-rouge {
+    background-color: rgba(179, 64, 47, 0.06);
+    padding: var(--s);
+    border-radius: 0 var(--rayon) var(--rayon) 0;
+    color: #8c2518;
+}
+
+.alerte-blocage-vert {
+    background-color: rgba(46, 125, 50, 0.06);
+    padding: var(--s);
+    border-radius: 0 var(--rayon) var(--rayon) 0;
+    color: #1b5e20;
+}
+
 /* --- Structure globale de la maquette --- */
 .conteneur-maquette {
-    max-width: 600px;
+    max-width: 1200px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: var(--m);
 }
 
-/* Barre de navigation */
+/* ==========================================================================
+   BARRE DE NAVIGATION UNIFIÉE ET RESPONSIVE (MOBILE-FIRST)
+   ========================================================================== */
+
+/* ----------------------------------------------------------------------
+   COURS MOBILE : STRUCTURE PAR DÉFAUT (PETIT ÉCRAN)
+   - flex-direction: column : Sur téléphone, on empile la marque, les liens, 
+     et la déconnexion verticalement pour éviter les chevauchements.
+   - align-items: stretch : Permet aux liens de prendre toute la largeur disponible.
+   ---------------------------------------------------------------------- */
 .navigation-barre {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     padding-bottom: var(--s);
     border-bottom: 1px solid #E2E8F0;
+    gap: var(--s);
+    /* Écart régulier de 16px entre les blocs verticaux */
+    position: sticky;
+    top: 0;
+    background-color: var(--fond); 
+    z-index: 100;
+    padding-top: var(--xs); /* Petit ajustement pour centrer verticalement au défilement */
 }
 
+/* Alignement de la marque (Logo texte) */
+.nav-brand {
+    font-weight: 800;
+    font-size: 1.3em;
+    color: #074625;
+    text-align: center;
+    /* Centré sur mobile */
+    letter-spacing: -0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: var(--m);
+}
+
+.nav-logo {
+    height: 45px;
+    width: auto;
+    flex-shrink: 0; /* Empêche l'icône de devenir minuscule si l'espace manque */
+}
+
+/* ----------------------------------------------------------------------
+   COURS MOBILE : LA GRILLE DE LIENS
+   - display: grid & grid-template-columns: 1fr 1fr : Coupe l'espace des liens 
+     en 2 colonnes égales sur téléphone.
+   - Effet : Les 4 onglets forment un joli tableau compact de 2x2, très facile 
+     à cliquer avec le pouce !
+   ---------------------------------------------------------------------- */
 .navigation-liens {
     display: flex;
     align-items: center;
-    gap: var(--s);
+    /* MODIFICATION PRO : Sur ordinateur, on applique un écart minimal de 48px 
+       entre le bloc du logo et le tout premier onglet ("Tableau de bord") */
+    gap: 48px; 
 }
 
-.nav-brand {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin-right: var(--xs);
-}
-
+/* Transformation des liens textes bruts en "badges/onglets" modernes */
 .nav-lien {
     color: var(--discret);
     text-decoration: none;
-    font-size: 0.95em;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-align: center;
+    padding: var(--xs) var(--s);
+    border-radius: var(--rayon);
+    background-color: transparent;
+    transition: all 0.2s ease;
 }
 
-.nav-lien.actif {
+/* Effet au survol / clic tactile */
+.nav-lien:hover {
     color: var(--texte);
-    font-weight: bold;
+    background-color: rgba(28, 36, 48, 0.05);
 }
 
+/* Style de l'onglet actif de la page courante */
+.nav-lien.actif {
+    color: var(--surface);
+    background-color: var(--texte);
+    /* Fond sombre solide */
+}
+
+/* Bouton Déconnexion sur mobile */
 .lien-deconnexion {
     color: var(--depense);
     text-decoration: none;
     font-size: 0.9em;
+    font-weight: bold;
+    text-align: center;
+    padding: var(--xs) var(--s);
+    border: 1px solid rgba(179, 64, 47, 0.2);
+    border-radius: var(--rayon);
+    background-color: rgba(179, 64, 47, 0.02);
+    transition: all 0.2s ease;
 }
 
+.lien-deconnexion:hover {
+    background-color: var(--depense);
+    color: var(--surface);
+}
+
+/* On isole les 4 onglets internes pour qu'ils restent groupés entre eux à 16px */
+.navigation-liens .nav-lien {
+    margin-left: 0;
+    /* Nettoyage des anciennes marges */
+}
+
+/* ==========================================================================
+   AJUSTEMENTS DU NAV POUR ÉCRANS LARGES (ORDINATEUR / TABLETTE)
+   - min-width: 500px : Dès que l'espace dépasse 500px (PC ou téléphone large), 
+     on rebascule sur une structure horizontale classique très élégante.
+   ========================================================================== */
+@media (min-width: 500px) {
+    .navigation-barre {
+        flex-direction: row;
+        /* Aligne la marque à gauche, les liens au centre, la déconnexion à droite */
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .nav-brand {
+        text-align: left;
+        margin-right: var(--l);
+    }
+
+    .navigation-liens {
+        display: flex;
+        /* Annule la grille 2x2 du mobile */
+        flex-direction: row;
+        gap: 64px;
+    }
+
+    .nav-lien {
+        font-size: 0.95em;
+        padding: var(--xs) var(--s);
+    }
+
+    .lien-deconnexion {
+        border: none;
+        /* Enlève l'encadrement mobile sur PC pour plus de discrétion */
+        background-color: transparent;
+        padding: 0;
+    }
+
+    .lien-deconnexion:hover {
+        background-color: transparent;
+        color: var(--depense);
+        text-decoration: underline;
+    }
+}
 /* --- Styles partagés pour l'affichage des données --- */
 .zone-hero {
     text-align: center;
@@ -119,6 +377,7 @@ body {
 .grille-stats {
     display: flex;
     gap: var(--s);
+    flex-wrap: wrap;
 }
 
 .carte-stat {
@@ -172,8 +431,9 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: var(--xs);
-    border-bottom: 1px solid var(--fond);
+    background-color: var(--fond);
+    padding: var(--s);
+    border-radius: var(--rayon);
 }
 
 .ligne-details {
@@ -197,6 +457,57 @@ body {
 .ligne-montant.positif { color: var(--revenu); }
 .ligne-montant.negatif { color: var(--depense); }
 
+ .page-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--m);
+    /* Espacement de 24px entre chaque gros bloc */
+}
+
+/* Les fiches Entrées / Dépenses s'étendent côte à côte sur tous les écrans */
+.grille-stats {
+    display: flex;
+    flex-direction: row;
+    gap: var(--s);
+    /* Espacement de 16px entre les deux cartes */
+    width: 100%;
+}
+
+.carte-stat {
+    flex: 1;
+    /* S'étirent équitablement à 50% de la largeur chacune */
+    text-align: center;
+}
+
+/* Les deux blocs d'historiques s'empilent verticalement partout */
+.grille-historiques-doubles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--m);
+    /* Espacement de 24px entre l'historique Entrées et Dépenses */
+}
+
+@media (min-width: 768px) {
+    body {
+        padding: var(--m);
+        /* Plus d'espace sur les bords extérieurs de l'ordinateur */
+    }
+    .page-dashboard {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        align-items: start;
+        gap: var(--m);
+    }
+    .zone-hero {
+        grid-column: 1 / -1;
+        }
+    .grille-stats {
+        grid-column: 1 / -1;
+    }
+    .grille-historiques-doubles {
+        grid-column: 1 / -1;
+    }
+}
 /* --- Styles de la page complète des Transactions --- */
 
 /* Le bloc complet d'une catégorie */
@@ -395,4 +706,427 @@ body {
     height: 300px;
     /* Donne une hauteur fixe et élégante au canevas */
     margin: var(--m) 0;
+}
+
+/* ==========================================================================
+   COURS CSS : COMPORTEMENT DU DESIGN DASHBOARD DOUBLE COLONNE
+   ========================================================================== */
+
+/* Sur Mobile (par défaut) : Tout s'empile verticalement de manière fluide */
+/* --- Styles partagés pour l'affichage des données --- */
+
+
+.grille-historiques-doubles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--m);
+}
+
+/* STYLE APPLIQUÉ AUX BOUTONS D'AJOUT IDENTIFIÉS */
+.bouton-ajouter {
+    border: none;
+    padding: var(--xs) var(--s);
+    border-radius: var(--rayon);
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--surface);
+    transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.bouton-ajouter:hover {
+    opacity: 0.9;
+}
+
+.bouton-ajouter:active {
+    transform: scale(0.98);
+}
+
+/* Couleurs spécifiques aux boutons pour correspondre au code couleur du site */
+.bouton-ajouter.btn-revenu {
+    background-color: var(--revenu);
+    /* Bouton d'ajout de revenu vert */
+}
+
+.bouton-ajouter.btn-depense {
+    background-color: var(--depense);
+    /* Bouton d'ajout de dépense rouge */
+}
+
+
+/* ==========================================================================
+   MEDIA QUERY : ACTIVATION DE LA LARGEUR ORDINATEUR (min-width: 850px)
+   C'est ici qu'on élimine les vides à gauche et à droite pour le PC.
+   ========================================================================== */
+@media (min-width: 850px) {
+
+    /* Les deux blocs d'historiques s'ouvrent en 2 colonnes parallèles parfaites */
+    .grille-historiques-doubles {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        /* Deux colonnes de largeurs rigoureusement identiques (50% / 50%) */
+        align-items: start;
+        gap: var(--m);
+    }
+
+    /* Les blocs de statistiques Entrées / Dépenses s'alignent proprement à l'horizontale */
+    .grille-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--m);
+    }
+}
+
+
+/* ==========================================================================
+   COURS APPORT FORMULAIRES UNIFIÉS & GRILLE DASHBOARD DOUBLE
+   ========================================================================== */
+
+/* ----------------------------------------------------------------------
+   COURS DASHBOARD RESPONSIVE (Double Historique Côte à Côte)
+   - Pourquoi : Vos blocs "Entrées" et "Dépenses" sont maintenant séparés.
+     Sur PC, on utilise CSS Grid pour les afficher parallèlement.
+   - grid-template-columns: 1fr 1fr : Sépare l'espace en deux colonnes égales (50% / 50%).
+   - align-items: start : Évite que la carte la plus courte ne s'étire artificiellement.
+   ---------------------------------------------------------------------- */
+.grille-historiques-doubles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--m);
+}
+
+@media (min-width: 850px) {
+
+    /* Aligne les deux historiques côte à côte sur PC et supprime les espaces vides */
+    .grille-historiques-doubles {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+        gap: var(--m);
+    }
+}
+
+/* ----------------------------------------------------------------------
+   COURS DESIGN : LES BOUTONS D'ACTION IDENTIFIÉS
+   - Pourquoi : Rendre l'interface intuitive en utilisant votre code couleur thématique.
+   - transform : Crée une micro-animation fluide de soulèvement au survol de la souris sur PC.
+   ---------------------------------------------------------------------- */
+.actions-boutons {
+    display: flex;
+    gap: var(--xs);
+    flex-wrap: wrap;
+}
+
+.btn-action {
+    display: inline-block;
+    text-decoration: none;
+    padding: var(--xs) var(--s);
+    border-radius: var(--rayon);
+    font-weight: bold;
+    font-size: 0.9em;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s ease, opacity 0.2s ease;
+}
+
+.btn-action:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btn-action:active {
+    transform: translateY(0);
+}
+
+/* Application des variables de couleurs contextuelles aux boutons */
+.btn-revenu {
+    background-color: var(--revenu) !important;
+    color: var(--surface) !important;
+}
+
+.btn-depense {
+    background-color: var(--depense) !important;
+    color: var(--surface) !important;
+}
+
+.btn-mixte {
+    background-color: var(--texte) !important;
+    color: var(--surface) !important;
+}
+
+
+/* ----------------------------------------------------------------------
+   COURS FORMULAIRE CONTEXTUEL RESPONSIVE (.zone-formulaire)
+   - max-width : Limite la largeur sur grand écran pour éviter que les champs 
+     as_p ne deviennent kilométriques et illisibles.
+   ---------------------------------------------------------------------- */
+.zone-formulaire {
+    max-width: 500px;
+    margin: var(--l) auto;
+}
+
+/* Uniformisation et espacement des paragraphes créés par {{ form.as_p }} */
+.zone-formulaire form p {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xs);
+    margin-bottom: var(--s);
+}
+
+/* Embellissement des éléments de saisie générés par Django */
+.zone-formulaire form input[type="text"],
+.zone-formulaire form input[type="number"],
+.zone-formulaire form input[type="date"],
+.zone-formulaire form select {
+    padding: var(--xs) var(--s);
+    border: 1px solid #E2E8F0;
+    border-radius: var(--rayon);
+    font-family: inherit;
+    font-size: 1em;
+    background-color: var(--fond);
+    box-sizing: border-box;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+.zone-formulaire form input:focus,
+.zone-formulaire form select:focus {
+    outline: none;
+    border-color: var(--texte);
+}
+
+.bouton-valider {
+    width: 100%;
+    color: var(--surface);
+    border: none;
+    padding: var(--s);
+    border-radius: var(--rayon);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-top: var(--s);
+    transition: opacity 0.2s;
+}
+
+.lien-annuler {
+    display: block;
+    text-align: center;
+    margin-top: var(--s);
+    color: var(--discret);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+
+/* ----------------------------------------------------------------------
+   COURS MODALE : LA POP-UP DE CRÉATION DE CATÉGORIE
+   - position: fixed : Permet de bloquer la boîte au centre de l'écran, 
+     indépendamment du défilement de la page (scroll).
+   - z-index: 1000 : Force l'affichage au premier plan absolu (par-dessus le site).
+   ---------------------------------------------------------------------- */
+.modale-arriere-plan {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(28, 36, 48, 0.6);
+    /* Assombrit le reste du site */
+    z-index: 1000;
+    display: none;
+    /* Contrôlé dynamiquement par le JS externe */
+    justify-content: center;
+    align-items: center;
+}
+
+.modale-contenu {
+    background-color: var(--surface);
+    padding: var(--m);
+    border-radius: var(--rayon);
+    width: 90%;
+    max-width: 400px;
+    box-shadow: var(--ombre);
+    animation: apparitionModale 0.2s ease-out;
+}
+
+/* Petite animation d'entrée fluide pour la boîte */
+@keyframes apparitionModale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ==========================================================================
+   STYLE DU BLOC FILTRES HORIZONTAL (EN RANGÉE)
+   ========================================================================== */
+
+.bloc-filtres-recherche {
+    padding: var(--s) !important;
+    background-color: var(--surface);
+    border: 1px solid #E2E8F0;
+}
+
+.filtres-titre {
+    font-size: 1em;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: var(--s);
+    color: var(--texte);
+}
+
+.formulaire-filtre-horizontal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s);
+}
+
+/* ----------------------------------------------------------------------
+   COURS FLEXBOX MULTI-ÉCRANS (LA RANGÉE DYNAMIQUE)
+   - display: flex & flex-direction: row : Aligne les 3 filtres côte à côte.
+   - flex-wrap: wrap : Sécurité vitale ! Si l'écran passe sous les 500px (Mobile),
+     les champs glissent automatiquement les uns sous les autres au lieu d'exploser le design.
+   ---------------------------------------------------------------------- */
+.zone-champs-filtres {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--s);
+    /* Écart uniforme de 16px entre les menus */
+    width: 100%;
+}
+
+.champ-filtre {
+    flex: 1;
+    /* Force les 3 sélecteurs à se partager équitablement la largeur (33% chacun) */
+    min-width: 140px;
+    /* Empêche les champs de devenir trop étroits et illisibles */
+    display: flex;
+    flex-direction: column;
+    gap: var(--xs);
+    margin: 0 !important;
+    /* Supprime les anciennes marges des paragraphes */
+}
+
+.champ-filtre label {
+    font-size: 0.75em;
+    font-weight: 700;
+    color: var(--discret);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bloc-filtres-recherche select {
+    padding: var(--xs) var(--s);
+    border: 1px solid #E2E8F0;
+    border-radius: var(--rayon);
+    background-color: var(--fond);
+    color: var(--texte);
+    font-family: inherit;
+    font-size: 0.9em;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+/* Alignement des boutons d'actions sous la rangée */
+.zone-filtres-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--m);
+    margin-top: var(--xs);
+}
+
+.btn-filtre-valider {
+    background-color: var(--texte);
+    color: var(--surface);
+    border: none;
+    padding: var(--xs) var(--m);
+    border-radius: var(--rayon);
+    font-weight: bold;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.lien-filtre-reset {
+    color: var(--discret);
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.lien-filtre-reset:hover {
+    color: var(--depense);
+}
+
+.zone-filters-secondaire {
+    width: 100%;
+}
+
+.btn-action-organisation {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    background-color: rgba(28, 36, 48, 0.04);
+    color: var(--texte);
+    padding: var(--xs) var(--s);
+    border-radius: var(--rayon);
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   NETTOYAGE ET SÉCURISATION DES FORMULAIRES D'INSCRIPTION (AUTH)
+   ========================================================================== */
+
+/* ----------------------------------------------------------------------
+   COURS CSS : MASQUAGE DES TEXTES D'AIDE PAR DÉFAUT
+   - .helptext / .form-text : Ce sont les classes générées par Django pour les 
+     longs commentaires d'instructions de sécurité.
+   - display: none : On les fait complètement disparaître de l'écran pour 
+     alléger visuellement le formulaire.
+   ---------------------------------------------------------------------- */
+.zone-formulaire-etroit form .helptext,
+.zone-formulaire-etroit form p > span.text-muted,
+.zone-formulaire-etroit form .form-text {
+    display: none !important;
+}
+
+/* ----------------------------------------------------------------------
+   COURS DESIGN : AFFICHAGE ÉLÉGANT DES ERREURS SPÉCIFIQUES
+   - .errorlist : C'est la liste de puces que Django génère automatiquement 
+     UNIQUEMENT si la validation échoue (ex: mot de passe trop court).
+   - Style pro : On retire les puces, on colore en rouge (--depense), et on 
+     ajoute une petite animation pour attirer l'attention.
+   ---------------------------------------------------------------------- */
+.zone-formulaire-etroit form .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--xs) 0;
+    color: var(--depense);
+    font-size: 0.85em;
+    font-weight: 600;
+    animation: secousseErreur 0.3s ease-in-out;
+}
+
+.zone-formulaire-etroit form .errorlist li {
+    margin-bottom: 4px;
+}
+
+/* Met en valeur le champ qui contient une erreur en lui donnant une bordure rouge */
+.zone-formulaire-etroit form p.has-error input {
+    border-color: var(--depense) !important;
+    background-color: rgba(179, 64, 47, 0.02);
+}
+
+/* Micro-animation de secousse pour signaler visuellement l'erreur */
+@keyframes secousseErreur {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
 }
