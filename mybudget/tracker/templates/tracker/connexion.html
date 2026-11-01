@@ -1,15 +1,25 @@
-<!-- Formulaire de connexion -->
 {% extends 'tracker/base.html' %}
 
 {% block content %}
-
-<div class="carte">
-    <h2>Connexion à Monbuget</h2>
-    <form method="post">
+<!-- MODIFICATION : Utilisation de notre classe de centrage étroite pour calibrer parfaitement la carte de connexion -->
+<div class="carte zone-formulaire-etroit">
+    <h2 style="margin-top: 0; color: var(--texte);">Connexion à MonBudget</h2>
+    
+    <!-- Formulaire de connexion -->
+    <form method="post" novalidate>
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type='submit' value='Se connecter'>
-    <p>Pas encore de compte ? <a href="{% url 'inscription' %}">Inscrivez-vous ici</a></p>
-</div>
 
+        <!-- Rendu automatique et épuré de vos champs d'identifiants (Username / Password) -->
+        {{ form.as_p }}
+        
+        <!-- MODIFICATION : Application de notre classe de bouton premium unifiée -->
+        <input type="submit" class="btn-validation-carte" value="Se connecter">
+    </form> <!-- CORRECTION : Ajout de la balise fermante du formulaire qui manquait dans votre code -->
+
+    <p class="bloc-lien-annuler" style="margin-top: var(--m);">
+        <span style="color: var(--discret); font-size: 0.9em;">Pas encore de compte ?</span> 
+        <!-- Redirection vers votre gabarit d'inscription propre -->
+        <a href="{% url 'inscription' %}" class="lien-annuler-carte" style="margin-left: 4px;">Inscrivez-vous ici</a>
+    </p>
+</div>
 {% endblock %}
