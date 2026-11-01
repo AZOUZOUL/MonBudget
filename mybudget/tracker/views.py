@@ -7,10 +7,17 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 from django.db.models import Sum, Count, DecimalField
 from django.db.models.functions import Coalesce
+from django.http import JsonResponse
 from decimal import Decimal
 
 from tracker.models import Categorie, Transaction
-from tracker.forms import TransactionForm, CategorieForm
+from tracker.forms import (
+    TransactionForm,
+    CategorieForm,
+    TransactionRevenuForm,
+    TransactionDepenseForm,
+    CategorieNoTypeForm,
+)
 
 
 
@@ -34,11 +41,6 @@ def demander_deconnexion(request):
     return render(request,
            'tracker/demander_deconnexion.html',)
 
-@login_required
-def deconnexion(request):
-    return render(request,
-                  'tracker/deconnexion.html',)
-    
 
 """
     <<< Ceci est le code que je voulais utiliser pour
@@ -129,7 +131,42 @@ def transaction_create(request):
     return render(request,
                   'tracker/transaction_create.html',
                   {'form': form})
+    
+@login_required
+def transaction_revenu_create(request):
+    if request.method == 'POST':
+        form = TransactionRevenuForm(request.POST, user=request.user)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.utilisateur = request.user
+            transaction.save()
+            return redirect('accueil')
+    else:
+        form = TransactionRevenuForm(user=request.user)
+    # COURS : On passe une variable 'titre' et une variable 'couleur' au HTML pour personnaliser le bouton
+    return render(request, 'tracker/transaction_specifique_create.html', {
+        'form': form, 
+        'titre': 'Enregistrer un Revenu',
+        'type_action': 'revenu',
+    })
 
+@login_required
+def transaction_depense_create(request):
+    if request.method == 'POST':
+        form = TransactionDepenseForm(request.POST, user=request.user)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.utilisateur = request.user
+            transaction.save()
+            return redirect('accueil')
+    else:
+        form = TransactionDepenseForm(user=request.user)
+    return render(request, 'tracker/transaction_specifique_create.html', {
+        'form': form, 
+        'titre': 'Enregistrer une Dépense',
+        'type_action': 'depense'
+    })
+    
 @login_required
 def transaction_update(request, pk):
     # Sécurité : On cherche la transaction par son ID (pk) ET on valide qu'elle appartient au connecté
@@ -204,6 +241,43 @@ def categorie_create(request):
     return render(request,
                   "tracker/categorie_create.html",
                   {"form": form})
+
+
+#     A
+#       P
+#         I
+@login_required
+def api_create_categorie(request):
+    if request.method == "POST":
+        nom = request.POST.get("nom")
+        type_categorie = request.POST.get("type")  # Reçoit soit 'REV' soit 'DEP'
+
+        # Validation de sécurité élémentaire
+        if type_categorie not in [Categorie.Type.REVENU, Categorie.Type.DEPENSE]:
+            return JsonResponse(
+                {"success": False, "error": "Type de catégorie invalide."}, status=400
+            )
+
+        if nom and type_categorie:
+            nouvelle_categorie = Categorie.objects.create(
+                nom=nom, type=type_categorie, utilisateur=request.user
+            )
+            return JsonResponse(
+                {"success": True, "id": nouvelle_categorie.id, "nom": nouvelle_categorie.nom}
+            )
+
+    return JsonResponse({"success": False, "error": "Requête invalide."}, status=400)
+#   The
+#       End
+
+@login_required
+def api_transaction_delete_instant(request, pk):
+    if request.method == "POST":
+        # Sécurité : On s'assure que la transaction appartient bien à l'utilisateur connecté
+        transaction = get_object_or_404(Transaction, pk=pk, utilisateur=request.user)
+        transaction.delete()
+        return JsonResponse({"success": True})
+    return JsonResponse({"success": False, "error": "Requête invalide."}, status=400)
 
 @login_required
 def categorie_update(request, pk):
