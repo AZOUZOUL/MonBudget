@@ -1,29 +1,51 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
+<!-- MODIFICATION : Utilisation de la classe de centrage étroite existante pour calibrer la carte sur PC et Mobile -->
+<div class="carte zone-formulaire-etroit">
+    
+    <!-- Titre mis en avant avec votre code couleur destructif existant -->
+    <h2 style="margin-top: 0; color: var(--depense);">Confirmer la suppression</h2>
 
-<div class="carte">
-    <h2>Confirmer la suppression</h2>
+    <p style="color: var(--discret); margin-bottom: var(--s);">Voulez-vous vraiment supprimer définitivement la transaction suivante ?</p>
 
-    <p>Voulez-vous vraiment supprimer définitivement la transaction suivante ?</p>
+    <!-- ------------------------------------------------------------------------
+         MODIFICATION : RÉUTILISATION DE LA BOÎTE DE RAPPEL DE DONNÉES CSS
+         - Pourquoi : Élimine la liste brute ul/li. On réutilise la structure en lignes
+           propres développée pour la catégorie.
+         ------------------------------------------------------------------------ -->
+    <div class="suppression-details-box">
+        <div class="suppression-details-ligne">
+            <span class="suppression-label">Libellé</span>
+            <span class="suppression-valeur">{{ transaction.libelle }}</span>
+        </div>
+        <div class="suppression-details-ligne">
+            <span class="suppression-label">Montant</span>
+            <span class="suppression-valeur" style="font-weight: 700;">{{ transaction.montant }} F CFA</span>
+        </div>
+        <div class="suppression-details-ligne">
+            <span class="suppression-label">Catégorie</span>
+            <span class="suppression-valeur">{{ transaction.categorie.nom }}</span>
+        </div>
+        <div class="suppression-details-ligne">
+            <span class="suppression-label">Date</span>
+            <!-- COURS DJANGO : Utilisation du filtre date configuré en français local -->
+            <span class="suppression-valeur">{{ transaction.date|date:"d F Y"|capfirst }}</span>
+        </div>
+    </div>
 
-    <!-- Rappel du sujet : affichage des informations de la ligne à détruire -->
-    <ul>
-        <li><strong>Libellé :</strong> {{ transaction.libelle }}</li>
-        <li><strong>Montant :</strong> {{ transaction.montant }} FCFA</li>
-        <li><strong>Categorie :</strong> {{ transaction.categorie }}</li>
-        <li><strong>Date :</strong> {{ transaction.date }}</li>
-    </ul>
-
-    <form method="post">
+    <!-- Formulaire de validation finale -->
+    <form method="post" style="margin-top: var(--m);">
         {% csrf_token %}
-        <input type="submit" value="Oui,supprimer définitivement">
+        <!-- MODIFICATION : Réutilisation complète du bouton rouge '.btn-depense' large pour un confort tactile maximal -->
+        <input type="submit" class="btn-action btn-depense" style="width: 100%; padding: var(--s);" value="Oui, supprimer définitivement">
     </form>
-    <br>
-    <hr>
-    <!-- Choix 2 : Annuler et repartir dans l'accueil -->
-    <a href="{% url 'transactions' %}">
-        Non, annuler et repartir dans Transactions
-    </a>
+    
+    <!-- MODIFICATION : Remplacement du <hr> par un alignement de bouton d'annulation sombre propre -->
+    <div style="margin-top: var(--s); text-align: center;">
+        <a href="{% url 'transactions' %}" class="btn-action btn-mixte" style="display: block; padding: var(--s);">
+            Non, annuler et repartir dans Transactions
+        </a>
+    </div>
 </div>
 {% endblock %}

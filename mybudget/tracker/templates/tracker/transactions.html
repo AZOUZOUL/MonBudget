@@ -2,56 +2,63 @@
 
 {% block content %}
 
-<!-- On insère le composant de filtrage ici -->
-    {% include 'tracker/filtre.html' %}
+<!-- On insère le composant de filtrage horizontal unifié -->
+{% include 'tracker/filtre.html' %}
 
-<h2>Toutes mes transactions par catégories</h2>
+<h2 style="font-size: 1.3em; margin-top: var(--m); margin-bottom: var(--s); color: var(--texte);">Toutes mes transactions par catégories</h2>
 
 {% for categorie in categories %}
     <!-- On n'affiche le bloc que si la catégorie contient au moins une transaction -->
     {% if categorie.transaction_set.all %}
-    <div class="bloc-categorie">
+    
+    <div class="bloc-categorie" style="margin-bottom: var(--m);">
         
-        <!-- En-tête coloré dynamiquement grâce à la propriété .couleur du J2 -->
-        <div class="categorie-entete" style="background-color: {{ categorie.couleur }};">
-            {{ categorie.nom }} ({% if categorie.type == 'REV' %}Entrées{% else %}Dépenses{% endif %})
+        <div class="categorie-entete" style="background-color: var(--surface); color: var(--texte); border-left: 5px solid {{ categorie.couleur }}; border-radius: var(--rayon) var(--rayon) 0 0; border: 1px solid #E2E8F0; border-left: 5px solid {{ categorie.couleur }}; display: flex; justify-content: space-between; align-items: center; padding: var(--s); box-sizing: border-box;">
+            <span style="font-weight: 700; font-size: 1.05em;">{{ categorie.nom }}</span>
+            
+            <!-- Petit badge de type arrondi discret -->
+            <span style="background-color: {{ categorie.couleur }}; color: var(--surface); font-size: 0.75em; font-weight: bold; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
+                {{ categorie.get_type_display }}
+            </span>
         </div>
         
-        <!-- Corps contenant la liste des transactions -->
-        <div class="categorie-corps">
-            {% for transaction in categorie.transaction_set.all %}
-            <div class="ligne-transaction-complete">
+        <!-- Corps contenant la liste des lignes de transactions rattachées -->
+        <div class="categorie-corps" style="background-color: var(--surface); border: 1px solid #E2E8F0; border-top: none; border-radius: 0 0 var(--rayon) var(--rayon); box-shadow: var(--ombre); padding: var(--xs) var(--s); display: flex; flex-direction: column;">
             
-                <div class="zone-gauche-interactive">
-                    <span class="finance-libelle">{{ transaction.libelle }}</span>
+            {% for transaction in categorie.transaction_set.all %}
+            <!-- Réutilisation directe de nos lignes d'affichages fluides adaptatives -->
+            <div class="ligne-transaction-complete" style="display: flex; justify-content: space-between; align-items: center; padding: var(--s) 0; border-bottom: 1px solid rgba(0, 0, 0, 0.04);">
+            
+                <div class="zone-gauche-interactive" style="display: flex; flex-direction: column; gap: 4px;">
+                    <!-- Libellé de l'opération -->
+                    <div class="{% if transaction.categorie.type == 'DEP' %} alerte-blocage-rouge {% else %} alerte-blocage-vert {% endif %}">
+                        <span class="finance-libelle" style="font-weight: 600;">{{ transaction.libelle }}</span>
+                    </div>
 
-                    <!-- Les boutons d'action À la GAUCHE-CENTRE -->
-                    <div class="zone-controles">
-                        <p class="bloc-modif">
-                            <a href="{% url 'transaction-update' transaction.pk %}" class="btn-action modif" >Modifier</a>
-                        </p>
-                        <p class="bloc-suppr">
-                            <a href="{% url 'transaction-delete' transaction.pk %}" class="btn-action suppr">Supprimer</a>
-                        </p>
+                    <div class="zone-controles" style="display: flex; gap: var(--s); align-items: center;">
+                        <a href="{% url 'transaction-update' transaction.pk %}" class="btn-action modif">Modifier</a>
+                        <a href="{% url 'transaction-delete' transaction.pk %}" class="btn-action suppr">Supprimer</a>
                     </div>
                 </div>
                 
-                <!-- Zone droite : Le libellé et le montant de l'opération -->
-                <div class="zone-infos-finances">
-                    <span class="finance-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
+                <!-- Zone droite : Le montant financier calé et imperméable aux coupures sur mobile -->
+                <div class="zone-infos-finances" style="text-align: right; white-space: nowrap; margin-left: var(--s);">
+                    <span class="finance-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}" style="font-weight: 700; font-size: 1.05em;">
                         {% if transaction.categorie.type == 'REV' %}+ {% else %}- {% endif %}{{ transaction.montant }} F CFA
                     </span>
                 </div>
                 
             </div>
             {% endfor %}
+            
         </div>
         
     </div>
     {% endif %}
 {% empty %}
-    <div class="carte" style="text-align: center;">
-        <p style="color: var(--discret);">Vous n'avez pas encore créé de catégories ou de transactions.</p>
+    <!-- Carte d'absence de données centrale -->
+    <div class="carte" style="text-align: center; padding: var(--l) var(--m);">
+        <p style="color: var(--discret); margin: 0; font-size: 0.95em;">Vous n'avez pas encore enregistré de transactions ou de catégories.</p>
     </div>
 {% endfor %}
 
