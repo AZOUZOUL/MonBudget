@@ -72,7 +72,7 @@
                 <!-- Zone droite : Montant coloré -->
                 <div class="zone-infos-finances">
                     <span class="ligne-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
-                        {% if transaction.categorie.type == 'REV' %}+ {% else %}- {% endif %}{{ transaction.montant }} F CFA
+                        {% if transaction.categorie.type == 'REV' %}+ {% else %}- {% endif %}{{ transaction.montant|floatformat:"0g" }} F CFA
                     </span>
                 </div>
             </div>
