@@ -4,42 +4,116 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Mon Budget</title>
     <link rel="icon" type="image/jpeg" href="{% static 'tracker/images/icone.jpg' %}">    
     <!-- Chargement de la feuille de style commune -->
     <link rel="stylesheet" href="{% static 'tracker/styles.css' %}" />
 </head>
 <body>
-
-    <!-- Conteneur principal centré (Taille maximale fixe pour tout le site) -->
-    <div class="conteneur-maquette">
+    <header>
+        <!-- Conteneur principal centré (Taille maximale fixe pour tout le site) -->
+        <div class="conteneur-maquette">
         
         <!-- Barre de navigation répétée sur toutes les pages centrales -->
         <nav class="navigation-barre">
-            <div class="navigation-liens">
-                <span class="nav-brand">
-                    <img src="{% static 'tracker/images/icone.jpg' %}" alt=" le logo de l'application" class="nav-logo">
-                    <em><span style="color: var(--depense);">Mon</span><span style="color: var(--revenu)">Budget</span></em>
-                </span>
 
-                <!-- Liens de navigation principaux -->
-                <a href="{% url 'accueil' %}" class="nav-lien {% if request.resolver_match.url_name == 'accueil' %}actif{% endif %}">Tableau de bord</a>
-                <a href=" {% url 'transactions' %} " class="nav-lien {% if request.resolver_match.url_name == 'transactions' or request.resolver_match.url_name == 'transactions-list' %}actif{% endif %}">Transactions</a>
-                <a href="{% url 'categories' %}"  class="nav-lien {% if request.resolver_match.url_name == 'categories' %}actif{% endif %}" >Categories</a>
-                <a href="{% url 'statistiques' %}" class="nav-lien {% if request.resolver_match.url_name == 'statistiques' %}actif{% endif %}">Stats</a>
+        <!-- NOUVEAU : En-tête de navigation mobile -->
+        <div class="navigation-entete">
+
+            <span class="nav-brand">
+                <img src="{% static 'tracker/images/icone.jpg' %}"
+                     alt="Logo MonBudget"
+                    class="nav-logo">
+
+                <em>
+                    <span style="color: var(--depense);">Mon</span><span style="color: var(--revenu);">Budget</span>
+                </em>
+            </span>
+
+            <!-- NOUVEAU : Bouton Hamburger -->
+            <button class="bouton-menu"
+                    id="boutonMenu"
+                    aria-label="Ouvrir le menu"
+                    aria-expanded="false"
+                    aria-controls="menuNavigation">
+
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+        </div>
+
+
+        <!-- MODIFICATION : Les liens sont regroupés dans un menu indépendant -->
+        <div class="navigation-liens" id="menuNavigation">
+
+            <a href="{% url 'accueil' %}"
+                class="nav-lien {% if request.resolver_match.url_name == 'accueil' %}actif{% endif %}">
+                Tableau de bord
+            </a>
+
+            <a href="{% url 'transactions' %}"
+                class="nav-lien {% if request.resolver_match.url_name == 'transactions' or request.resolver_match.url_name == 'transactions-list' %}actif{% endif %}">
+                Transactions
+            </a>
+
+            <a href="{% url 'categories' %}"
+                class="nav-lien {% if request.resolver_match.url_name == 'categories' %}actif{% endif %}">
+                Catégories
+            </a>
+
+            <a href="{% url 'statistiques' %}"
+                class="nav-lien {% if request.resolver_match.url_name == 'statistiques' %}actif{% endif %}">
+                Stats
+            </a>
+
+            <a href="{% url 'demander-deconnexion' %}"
+                class="lien-deconnexion">
+                Déconnexion
+            </a>
+
+            <!-- PROFIL DE L'UTILISATEUR -->
+            <div class="menu-utilisateur">
+                <span class="icone-utilisateur">👤</span>
+
+                <div class="informations-utilisateur">
+                    <small>Connecté en tant que</small>
+                    <strong>{{ user.get_full_name|default:user.username }}</strong>
+                </div>
             </div>
-            
-            <!-- Lien de déconnexion sécurisé (J3) -->
-            <a href="{% url 'demander-deconnexion' %}" class="lien-deconnexion">Déconnexion</a>
-        </nav>
 
+        </div>
+
+        </nav>
+    </header>
+    
+    <div>
         <!-- Zone dynamique où le contenu spécifique de chaque page sera injecté -->
         <main>
             {% block content %}{% endblock %}
         </main>
 
     </div>
-    
+
+    <footer class="site-footer">
+        <div class="footer-contenu">
+            <div class="footer-marque">
+                <span class="footer-nom">MonBudget</span>
+                <span class="footer-slogan">Gérez mieux. Économisez plus.</span>
+            </div>
+
+            <div class="footer-copyright">
+                © {% now "Y" %} MonBudget. Tous droits réservés.
+            </div>
+        </div>
+    </footer>
+
+    <!-- NOUVEAU : Chargement du JavaScript de navigation -->
+    <script src="{% static 'tracker/navigation.js' %}" defer></script>
+
     {% block javascript %}
     {% endblock %}
 </body>
