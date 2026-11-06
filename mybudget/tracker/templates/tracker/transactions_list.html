@@ -14,32 +14,37 @@
             
             <div class="ligne-item" style="margin-bottom: var(--xs); border-bottom: 1px solid rgba(0,0,0,0.03); border-radius: var(--rayon);">
                 
-                <div class="zone-gauche-interactive" style="display: flex; align-items: center; gap: var(--s); width: 100%;">
+                <div class="bloc-ligne">
+                    <div class="zone-gauche-interactive" style="display: flex; align-items: center; gap: var(--s); width: 100%;">
                     
-                    <div class="stat-pastille" style="background-color: {{ transaction.categorie.couleur }}; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;"></div>
+                        <div class="stat-pastille" style="background-color: {{ transaction.categorie.couleur }}; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;"></div>
                     
-                    <div class="ligne-details" style="flex: 1;">
-                        <!-- Le libellé principal -->
-                        <span class="ligne-libelle">{{ transaction.libelle }}</span>
+                        <div class="ligne-details" style="flex: 1;">
+                            <!-- Le libellé principal -->
+                            <span class="ligne-libelle">{{ transaction.libelle }}</span>
                         
-                        <span class="ligne-categorie" style="color: {{ transaction.categorie.couleur }}; font-weight: 600; font-size: 0.8em; margin-top: 2px;">
-                            {{ transaction.categorie.nom }} ({{ transaction.categorie.get_type_display }})
-                        </span>
+                            <span class="ligne-categorie" style="color: {{ transaction.categorie.couleur }}; font-weight: 600; font-size: 0.8em; margin-top: 2px;">
+                                {{ transaction.categorie.nom }} ({{ transaction.categorie.get_type_display }})
+                            </span>
                         
-                        <!-- Les petits boutons d'action discrets réorganisés horizontalement -->
-                        <div class="zone-controles" style="margin-top: 6px;">
-                            <a href="{% url 'transaction-update' transaction.pk %}" class="btn-action modif">Modifier</a>
-                            <a href="{% url 'transaction-delete' transaction.pk %}" class="btn-action suppr">Supprimer</a>
                         </div>
-                    </div>
                     
-                </div>
+                    </div>
                 
-                <!-- Zone droite : Le montant préservé sans coupure -->
-                <div class="zone-infos-finances" style="text-align: right; white-space: nowrap; margin-left: var(--s);">
+                    <!-- Zone droite : Le montant préservé sans coupure -->
+                    <div class="zone-controles" style="margin-top: 6px;">
+                        <a href="{% url 'transaction-update' transaction.pk %}" class="btn-action modif">Modifier</a>
+                        <a href="{% url 'transaction-delete' transaction.pk %}" class="btn-action suppr">Supprimer</a>
+                    </div>
+
+                </div>
+                <!-- Les petits boutons d'action discrets réorganisés horizontalement -->
+                <div class="zone-infos-finances bloc-ligne-montant" style="text-align: right; white-space: nowrap; margin-left: var(--s);">
                     <span class="ligne-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}" style="font-size: 1.05em;">
-                        {% if transaction.categorie.type == 'REV' %}+ {% else %}- {% endif %}{{ transaction.montant }} F CFA
+                        {% if transaction.categorie.type == 'REV' %}+ {% else %}- {% endif %}{{ transaction.montant|floatformat:"0g" }}
+                        
                     </span>
+                    <span class="ligne-montant">F CFA</span>
                 </div>
                 
             </div>
