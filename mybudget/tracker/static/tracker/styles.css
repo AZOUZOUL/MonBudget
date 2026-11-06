@@ -571,11 +571,22 @@ body {
     gap: var(--s);
     /* Espacement de 16px entre Modifier et Supprimer */
     align-items: center;
+
+}
+
+.bloc-ligne {
+    display: flex;
+    flex-direction: column;
+}
+
+.bloc-ligne-montant {
+    display: flex;
+    flex-direction: column;
 }
 
 .btn-action {
     text-decoration: none;
-    font-size: 0.85em;
+    font-size: 0.5em;
     /* Légèrement plus discret pour l'intégration */
     font-weight: bold;
     margin: 0;
@@ -1129,4 +1140,857 @@ body {
     0%, 100% { transform: translateX(0); }
     20%, 60% { transform: translateX(-4px); }
     40%, 80% { transform: translateX(4px); }
+}
+
+/* ==========================================================================
+   MONBUDGET — MODERNISATION RESPONSIVE
+   VERSION MOBILE + ORDINATEUR
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. AJUSTEMENTS GÉNÉRAUX
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+/* MODIFICATION : Empêche les débordements horizontaux */
+html,
+body {
+    width: 100%;
+    min-width: 320px;
+    overflow-x: clip;
+}
+
+body {
+    -webkit-text-size-adjust: 100%;
+}
+
+.conteneur-maquette {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 4em;
+}
+
+
+/* ==========================================================================
+   2. NAVIGATION RESPONSIVE
+   ========================================================================== */
+
+/* MODIFICATION : Nouvelle navigation adaptée aux petits écrans */
+
+.navigation-barre {
+    width: 100%;
+    gap: 12px;
+    padding: 12px;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    background-color: var(--surface, #ffffff);
+}
+
+.navigation-liens {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 100%;
+    margin: 0;
+}
+
+.nav-logo {
+    height: 36px;
+    width: 36px;
+    object-fit: contain;
+}
+
+.nav-lien {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 0;
+    padding: 12px 6px;
+    font-size: 0.85em;
+    border-radius: 10px;
+    white-space: normal;
+}
+
+.lien-deconnexion {
+    width: 100%;
+    padding: 11px;
+    border-radius: 10px;
+}
+
+
+/* ==========================================================================
+   3. PAGE DE CONNEXION
+   ========================================================================== */
+
+/* MODIFICATION : Carte de connexion plus confortable */
+
+.zone-formulaire-etroit {
+    width: 100%;
+    max-width: 460px;
+    margin: 32px auto;
+}
+
+.zone-formulaire-etroit.carte {
+    padding: 28px 32px;
+    border-radius: 16px;
+}
+
+.zone-formulaire-etroit h2 {
+    font-size: 1.4em;
+    margin-bottom: 28px;
+}
+
+/* MODIFICATION : Uniformisation des champs,
+   notamment le champ password qui n'était pas ciblé. */
+
+.zone-formulaire-etroit form input[type="text"],
+.zone-formulaire-etroit form input[type="password"],
+.zone-formulaire-etroit form input[type="email"],
+.zone-formulaire-etroit form input[type="number"],
+.zone-formulaire-etroit form input[type="date"],
+.zone-formulaire-etroit form select {
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 14px;
+    border: 1px solid #DCE2E9;
+    border-radius: 9px;
+    background-color: #F8FAFC;
+    font-family: inherit;
+    font-size: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.zone-formulaire-etroit form input:focus,
+.zone-formulaire-etroit form select:focus {
+    outline: none;
+    border-color: var(--revenu);
+    background-color: var(--surface);
+    box-shadow: 0 0 0 3px rgba(47, 111, 78, 0.10);
+}
+
+.btn-validation-carte {
+    min-height: 48px;
+    border-radius: 10px;
+}
+
+
+/* ==========================================================================
+   4. TABLEAU DE BORD
+   ========================================================================== */
+
+.page-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    min-width: 0;
+}
+
+/* Zone du solde */
+
+/* MODIFICATION : Centrage du bloc du solde */
+.zone-hero {
+    width: 100%;
+    padding: 28px 12px;
+    text-align: center;
+    align-self: stretch;
+}
+
+
+.hero-contexte {
+    font-size: 1em;
+}
+
+.hero-chiffre {
+    font-size: clamp(1.8rem, 6vw, 2.8rem);
+    overflow-wrap: anywhere;
+}
+
+/* Cartes statistiques */
+
+.grille-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+}
+
+.carte-stat {
+    min-width: 0;
+    padding: 20px 10px;
+}
+
+.stat-montant {
+    font-size: clamp(0.95rem, 3.5vw, 1.5rem);
+    overflow-wrap: anywhere;
+}
+
+
+/* ==========================================================================
+   5. HISTORIQUES
+   ========================================================================== */
+
+.grille-historiques-doubles {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+.grille-historiques-doubles > .carte {
+    min-width: 0;
+    padding: 20px;
+    border-radius: 14px;
+}
+
+/* En-tête des historiques */
+
+.historique-entete {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.historique-titre {
+    font-size: 1.05em;
+    margin: 0;
+}
+
+/* Boutons d'ajout */
+
+.bouton-ajouter {
+    min-height: 38px;
+    padding: 10px 12px;
+    font-size: 0.78em;
+    border-radius: 8px;
+    white-space: normal;
+    max-width: 100%;
+}
+
+/* Lignes de transactions */
+
+.ligne-item {
+    gap: 10px;
+    min-width: 0;
+    padding: 14px 10px;
+    border-radius: 10px;
+}
+
+.ligne-details {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.ligne-montant {
+    text-align: right;
+    font-size: 1em;
+    overflow-wrap: anywhere;
+}
+
+
+/* ==========================================================================
+   6. ORDINATEUR ET GRANDS ÉCRANS
+   ========================================================================== */
+
+/* MODIFICATION : On ne passe à la navigation horizontale que lorsque
+   l'écran dispose d'une largeur suffisante. */
+
+@media (min-width: 850px) {
+
+    body {
+        padding: 24px;
+    }
+
+    .navigation-barre {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .navigation-liens {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 12px;
+    }
+
+    .nav-brand {
+        flex: 0 0 auto;
+        margin-right: 20px;
+    }
+
+    .nav-lien {
+        flex: 0 1 auto;
+        white-space: nowrap;
+        padding: 12px 14px;
+        font-size: 0.9em;
+    }
+
+    .lien-deconnexion {
+        width: auto;
+        padding: 8px 12px;
+        border: none;
+        background: transparent;
+        white-space: nowrap;
+    }
+
+    .grille-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+    }
+
+    .grille-historiques-doubles {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+    }
+
+    .zone-formulaire-etroit {
+        margin: 40px auto;
+    }
+
+}
+
+.profil{
+    display: flex;
+    align-items: left;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+}
+
+
+/* ==========================================================================
+   7. PETITS SMARTPHONES
+   ========================================================================== */
+
+@media (max-width: 480px) {
+
+    body {
+        padding: 10px;
+    }
+
+    .conteneur-maquette {
+        gap: 16px;
+    }
+
+    .navigation-barre {
+        padding: 10px 0;
+    }
+
+    .nav-lien {
+        font-size: 0.82em;
+        padding: 11px 5px;
+    }
+
+    .zone-formulaire-etroit {
+        margin: 20px auto;
+    }
+
+    .zone-formulaire-etroit.carte {
+        padding: 24px 18px;
+    }
+
+    .zone-formulaire-etroit h2 {
+        font-size: 1.25em;
+    }
+
+    .page-dashboard {
+        gap: 18px;
+    }
+
+    .zone-hero {
+        padding: 22px 5px;
+    }
+
+    .grille-stats {
+        gap: 10px;
+    }
+
+    .carte-stat {
+        padding: 16px 6px;
+    }
+
+    .grille-historiques-doubles > .carte {
+        padding: 16px 12px;
+    }
+
+    .historique-entete {
+        align-items: flex-start;
+    }
+
+    .bouton-ajouter {
+        font-size: 0.72em;
+        padding: 9px;
+    }
+
+}
+
+/* =====================================================
+   NAVIGATION MOBILE - MONBUDGET
+   ===================================================== */
+
+@media (max-width: 768px) {
+
+    /* Barre principale */
+    .navigation-barre {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 12px 0;
+        gap: 15px;
+        position: relative;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    /* En-tête contenant le logo et le hamburger */
+    .navigation-entete {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        min-height: 55px;
+        width: 100%;
+    }
+
+    /* Logo parfaitement centré */
+    .nav-brand {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: max-content;
+        font-size: 1.3rem;
+        margin: 0;
+    }
+
+    .nav-logo {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+    }
+
+
+    /* Bouton hamburger */
+    .bouton-menu {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+
+        width: 48px;
+        height: 48px;
+
+        margin-right: 10px;
+        padding: 8px;
+
+        border: none;
+        border-radius: 10px;
+        background: #1C2430;
+
+        cursor: pointer;
+        z-index: 1001;
+    }
+
+    /* Animation des trois barres en croix */
+    .navigation-barre.menu-ouvert .bouton-menu span:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+
+    .navigation-barre.menu-ouvert .bouton-menu span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .navigation-barre.menu-ouvert .bouton-menu span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+
+    .bouton-menu span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background: white;
+        border-radius: 5px;
+        transition: 0.3s ease;
+    }
+
+
+    /* Animation du hamburger en croix */
+    .navigation-barre.menu-ouvert .bouton-menu span:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+
+    .navigation-barre.menu-ouvert .bouton-menu span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .navigation-barre.menu-ouvert .bouton-menu span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+
+
+    /* Panneau latéral coulissant */
+    .navigation-liens {
+        position: fixed;
+        top: 0;
+        right: 0;
+
+        width: 75%;
+        max-width: 320px;
+        height: 100vh;
+
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+
+        padding: 100px 20px 20px;
+
+        background: white;
+        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.15);
+
+        z-index: 999;
+
+        transform: translateX(100%);
+        transition: transform 0.35s ease-in-out;
+    }
+
+    /* Ouverture du panneau */
+    .navigation-barre.menu-ouvert .navigation-liens {
+        transform: translateX(0);
+    }
+
+
+    /* Liens de navigation */
+    .nav-lien {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        width: 100%;
+        min-height: 52px;
+
+        padding: 14px 18px;
+
+        font-size: 1.05rem;
+        font-weight: 600;
+
+        border-radius: 10px;
+        text-align: left;
+    }
+
+    /* Page actuellement sélectionnée */
+    .nav-lien.actif {
+        background: #1C2430;
+        color: white;
+    }
+
+
+    /* Déconnexion */
+    .lien-deconnexion {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        width: 100%;
+        min-height: 50px;
+
+        padding: 14px 18px;
+        margin-top: 5px;
+
+        font-size: 1rem;
+        font-weight: 600;
+
+        border-radius: 10px;
+        background: #FFF1F0;
+    }
+
+    /* PROFIL UTILISATEUR EN BAS DU MENU */
+    .menu-utilisateur {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        margin-top: auto;
+        flex-shrink: 0;
+
+        margin-left: -18px;
+        margin-right: -18px;
+
+        padding: 18px;
+        padding-bottom: max(80px, env(safe-area-inset-bottom));
+
+        border-top: 1px solid #E5E7EB;
+        background: #F8FAFC;
+        border-radius: 0;
+    }
+
+    .icone-utilisateur {
+        font-size: 28px;
+    }
+
+    .informations-utilisateur {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        min-width: 0;
+    }
+
+    .informations-utilisateur small {
+        color: #64748B;
+        font-size: 0.75rem;
+    }
+
+    .informations-utilisateur strong {
+        color: #1C2430;
+        font-size: 0.95rem;
+        overflow-wrap: anywhere;
+    }
+
+    /* ADAPTATION DES LIENS DANS LE MENU MOBILE */
+    /* PANNEAU LATÉRAL MOBILE */
+    .navigation-liens {
+        position: fixed;
+        top: 0;
+        right: 0;
+
+        width: min(80%, 300px);
+        height: 100vh;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+
+        gap: 10px;
+        padding: 100px 18px 25px;
+
+        background: white;
+        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.15);
+
+        overflow-y: auto;
+        z-index: 999;
+
+        transform: translateX(100%);
+        transition: transform 0.35s ease-in-out;
+
+        box-sizing: border-box;
+        min-height: 100vh;
+        padding: 100px 18px 25px;
+    }
+
+    /* OUVERTURE DU MENU */
+    .navigation-barre.menu-ouvert .navigation-liens {
+        transform: translateX(0);
+    }
+
+    /* DIMENSIONS DES LIENS */
+    .navigation-liens .nav-lien,
+    .navigation-liens .lien-deconnexion {
+        display: flex;
+        flex: 0 0 auto;
+
+        width: 100%;
+        height: auto;
+        min-height: 48px;
+
+        margin: 0;
+        padding: 12px 15px;
+
+        box-sizing: border-box;
+
+        align-items: center;
+        justify-content: flex-start;
+
+        font-size: 1rem;
+        text-align: left;
+    }
+
+}
+
+
+/* =====================================================
+   ORDINATEUR : CONSERVATION DE LA NAVIGATION CLASSIQUE
+   ===================================================== */
+
+@media (min-width: 768px) {
+
+    .bouton-menu {
+        display: none;
+    }
+
+    .navigation-entete {
+        display: contents;
+    }
+
+    .navigation-barre {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .navigation-liens {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+
+}
+
+/* FOOTER */
+.site-footer {
+    width: 100%;
+    margin-top: 60px;
+    padding: 22px 25px;
+    background: #1C2430;
+    color: #FFFFFF;
+    box-sizing: border-box;
+}
+
+.footer-contenu {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.footer-marque {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.footer-nom {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.footer-slogan {
+    font-size: 0.8rem;
+    color: #AAB4C3;
+}
+
+.footer-copyright {
+    font-size: 0.8rem;
+    color: #AAB4C3;
+    text-align: right;
+}
+
+/* VERSION MOBILE */
+@media (max-width: 768px) {
+    .site-footer {
+        margin-top: 40px;
+        padding: 22px 15px;
+    }
+
+    .footer-contenu {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+
+    .footer-copyright {
+        text-align: center;
+    }
+}
+
+/* PROFIL UTILISATEUR SUR PC */
+@media (min-width: 768px) {
+    .menu-utilisateur {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        margin: 0 0 0 20px;
+        padding: 8px 14px;
+
+        background: #F1F5F9;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+
+        flex-shrink: 0;
+    }
+
+    .icone-utilisateur {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 38px;
+        height: 38px;
+
+        background: #1C2430;
+        color: white;
+        border-radius: 50%;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .informations-utilisateur {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+    }
+
+    .informations-utilisateur small {
+        color: #64748B;
+        font-size: 0.7rem;
+    }
+
+    .informations-utilisateur strong {
+        color: #1C2430;
+        font-size: 0.9rem;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+}
+
+/* NAVIGATION FIXE SUR ORDINATEUR */
+@media (min-width: 768px) {
+
+    .navigation-barre {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+
+        width: 100%;
+        max-width: 1200px;
+
+        z-index: 1000;
+        background-color: var(--surface, #ffffff);
+    }
+
+    .conteneur-maquette {
+        padding-top: 85px;
+    }
+
 }

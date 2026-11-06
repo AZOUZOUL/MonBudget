@@ -10,7 +10,7 @@
     
         <!-- Application de la classe .negatif si le solde du mois courant est déficitaire -->
         <h1 class="hero-chiffre {% if solde_du_mois_actuel < 0 %}negatif{% else %}positif{% endif %}">
-            {% if solde_du_mois_actuel < 0 %}{% else %}+{% endif %}{{ solde_du_mois_actuel }} F CFA
+            {% if solde_du_mois_actuel < 0 %}{% else %}+{% endif %}{{ solde_du_mois_actuel|floatformat:"0g" }} F CFA
         </h1>
         <div class="hero-label">solde du mois</div>
     </div>
@@ -20,13 +20,13 @@
         <div class="carte carte-stat">
             <div class="stat-titre">Entrées</div>
             <!-- Affichage des entrées exclusives du mois en cours -->
-            <div class="stat-montant revenu-couleur">{{ entrees_actuelles }} F CFA</div>
+            <div class="stat-montant revenu-couleur">{{ entrees_actuelles|floatformat:"0g" }} F CFA</div>
         </div>
     
         <div class="carte carte-stat">
             <div class="stat-titre">Dépenses</div>
             <!-- Affichage des dépenses exclusives du mois en cours -->
-            <div class="stat-montant depense-couleur">{{ depenses_actuelles }} F CFA</div>
+            <div class="stat-montant depense-couleur">{{ depenses_actuelles|floatformat:"0g" }} F CFA</div>
         </div>
     </div>
 
@@ -42,26 +42,26 @@
             </div>
 
             <div class="liste-lignes">
-                {% for transaction in transactions_actuelles %}
-                {% if transaction.categorie.type == 'REV' %}
-                <div class="transaction-item">
-                    <div class="ligne-item">
-                        <div class="ligne-details">
-                            <span class="ligne-libelle">{{ transaction.libelle }}</span>
-                            <!-- J2 : ORM Traversée de clé étrangère pour le nom de la catégorie -->
-                            <span class="ligne-categorie">{{ transaction.categorie.nom }}</span>
+                {% for transaction in mes_revenus_actuelles %}
+                
+                    <div class="transaction-item">
+                        <div class="ligne-item">
+                            <div class="ligne-details">
+                                <span class="ligne-libelle">{{ transaction.libelle }}</span>
+                                <!-- J2 : ORM Traversée de clé étrangère pour le nom de la catégorie -->
+                                <span class="ligne-categorie">{{ transaction.categorie.nom }}</span>
+                            </div>
+                            <!-- Coloration dynamique de la ligne selon le signe du montant -->
+                            <span class="ligne-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
+                                {% if transaction.categorie.type == 'REV' %} + {% else %} - {% endif %}{{ transaction.montant|floatformat:"0g" }} F CFA
+                            </span>
                         </div>
-                        <!-- Coloration dynamique de la ligne selon le signe du montant -->
-                        <span class="ligne-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
-                            {% if transaction.categorie.type == 'REV' %} + {% else %} - {% endif %}{{ transaction.montant }} F CFA
-                        </span>
                     </div>
-                </div>
-                {% endif %}
+                
                 {% empty %}
-                <p style="color: var(--discret); text-align: center; padding: var(--s) 0;">
-                    Aucune Entrée enregistrée.
-                </p>
+                    <p style="color: var(--discret); text-align: center; padding: var(--s) 0;">
+                        Aucune Entrée enregistrée.
+                    </p>
                 {% endfor %}
             </div>
         </div>
@@ -78,26 +78,28 @@
             </div>
 
             <div class="liste-lignes">
-                {% for transaction in transactions_actuelles %}
-                {% if transaction.categorie.type == 'DEP' %}
-                <div class="transaction-item">
-                    <div class="ligne-item">
-                        <div class="ligne-details">
-                            <span class="ligne-libelle">{{ transaction.libelle }}</span>
-                            <!-- J2 : ORM Traversée de clé étrangère pour le nom de la catégorie -->
-                            <span class="ligne-categorie">{{ transaction.categorie.nom }}</span>
+                {% for transaction in mes_depenses_actuelles %}
+                
+                    <div class="transaction-item">
+                        <div class="ligne-item">
+                            <div class="ligne-details">
+                                <span class="ligne-libelle">{{ transaction.libelle }}</span>
+                                <!-- J2 : ORM Traversée de clé étrangère pour le nom de la catégorie -->
+                                <span class="ligne-categorie">{{ transaction.categorie.nom }}</span>
+                            </div>
+                            <!-- Coloration dynamique de la ligne selon le signe du montant -->
+                            <span class="ligne-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
+                                {% if transaction.categorie.type == 'REV' %} + {% else %} - {% endif %}{{ transaction.montant|floatformat:"0g" }} F CFA
+                            </span>
                         </div>
-                        <!-- Coloration dynamique de la ligne selon le signe du montant -->
-                        <span class="ligne-montant {% if transaction.categorie.type == 'REV' %}positif{% else %}negatif{% endif %}">
-                            {% if transaction.categorie.type == 'REV' %} + {% else %} - {% endif %}{{ transaction.montant }} F CFA
-                        </span>
                     </div>
-                </div>
-                {% endif %}
+                
                 {% empty %}
-                <p style="color: var(--discret); text-align: center; padding: var(--s) 0;">
-                    Aucune transaction enregistrée.
-                </p>
+                
+                    <p style="color: var(--discret); text-align: center; padding: var(--s) 0;">
+                        Aucune transaction enregistrée.
+                    </p>
+                
                 {% endfor %}
             </div>
         </div>
