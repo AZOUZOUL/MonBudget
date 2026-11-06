@@ -89,6 +89,18 @@ def accueil(request):
         date__year=annee_actuelle,  # Extrait uniquement l'année en cours
         date__month=mois_actuel,  # Extrait uniquement le mois en cours
     )
+    
+    mes_depenses_actuelles = []
+    for transaction in mes_transactions_actuelles:
+        if transaction.categorie.type == "DEP":
+            mes_depenses_actuelles.append(transaction)
+            
+    mes_revenus_actuelles = []
+    for transaction in mes_transactions_actuelles:
+        if transaction.categorie.type == "REV":
+            mes_revenus_actuelles.append(transaction)
+
+    
     # Calculs automatiques basés uniquement sur les données du mois filtré
     entrees_actuelles = sum(transaction.montant for transaction in mes_transactions_actuelles if transaction.categorie.type == 'REV')
     depenses_actuelles = sum(transaction.montant for transaction in mes_transactions_actuelles if transaction.categorie.type == "DEP")
@@ -106,15 +118,41 @@ def accueil(request):
             "depenses_actuelles": depenses_actuelles,
             "solde_du_mois_actuel": solde_du_mois_actuel,
             "date_actuelle": maintenant,
+            "mes_depenses_actuelles": mes_depenses_actuelles,
+            "mes_revenus_actuelles": mes_revenus_actuelles,
         },
     )
     
 @login_required
 def transactions(request):
     ma_categorie = Categorie.objects.filter(utilisateur=request.user)
+    
+ # 1. Sécurité : On part de la liste de base cloisonnée de l'utilisateur connecté
+    transactions_filtrees = Transaction.objects.filter(utilisateur=request.user)
+    
+    # Mois disponibles pour cet utilisateur
+    # .dates('date', 'month', order='DESC') extrait les combinaisons uniques Annee-Mois
+    mois_disponibles = transactions_filtrees.dates('date', 'month', order='DESC')
+    
+    # 2. Récupération des paramètres envoyés dans l'URL (?type=...&categorie=...&mois=...)
+  
+    filtre_mois = request.GET.get('mois') # Format attendu : "YYYY-MM"
+
+    if filtre_mois:
+        # Le format "YYYY-MM" (ex: 2026-10) se découpe facilement en deux éléments
+        try:
+            annee, mois = filtre_mois.split('-')
+            transactions_filtrees = transactions_filtrees.filter(date__year=annee, date__month=mois)
+        except ValueError:
+            pass # Si le format de date dans l'URL est corrompu, on ignore le filtre
+
+    
     return render(request,
                   "tracker/transactions.html",
-                  {"categories": ma_categorie})
+                  {'categories': ma_categorie,
+                   'mois_disponibles': mois_disponibles,
+                    'filtre_mois': filtre_mois,
+                    })
     
 @login_required
 def transaction_create(request):
@@ -409,3 +447,15 @@ def statistiques(request):
                    'montants': montants,
                    'couleurs': couleurs,
                   })
+    
+
+@login_required
+def user_name(request):
+    utilisateur=request.user
+    return render(
+        request,
+        "tracker/base.html",
+        {
+            "user": utilisateur,
+        },
+    )
