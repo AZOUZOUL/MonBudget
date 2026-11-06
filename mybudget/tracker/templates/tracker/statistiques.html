@@ -4,7 +4,7 @@
 {% block content %}
 <h2 class="stat-page-titre">Analyses & Statistiques</h2>
 <p class="stat-page-description">
-    Voici la répartition et le volume financier de vos opérations par catégories.
+    Voici la répartition et le volume financier de vos <span style="color: var(--depense);">dépenses</span> par catégories.
 </p>
 
 <!-- Sécurisation des données conforme à la consigne (Évite les failles XSS) -->
@@ -38,11 +38,12 @@
         </div>
 
         <!-- Zone droite : Le volume financier mis en avant (Le sujet) -->
-        <div class="stat-zone-montant">
+        <div class="stat-zone-montant bloc-ligne-montant">
             <!-- Coloration dynamique du montant selon le type de la catégorie (REV ou DEP) -->
             <span class="stat-chiffre {% if categorie.type == 'REV' %}couleur-revenu{% else %}couleur-depense{% endif %}">
-                {% if categorie.type == 'REV' %}+{% else %}-{% endif %} {{ categorie.total_depense|floatformat:2 }} F CFA
+                {% if categorie.type == 'DEP' %}-{% endif %} {{ categorie.total_depense|floatformat:"0g" }}
             </span>
+            <span class="ligne-montant">F CFA</span>
         </div>
 
     </div>
