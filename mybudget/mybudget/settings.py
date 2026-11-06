@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-r8r=@dqbg_!$(=*jefhg)zokp6_2zv-ek^rn6seo_7jm&allfe
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '192.168.11.100',
+]
 
 # Force Django à rediriger vers votre page d'accueil '/' après la connexion
 LOGIN_REDIRECT_URL = "/"
@@ -114,6 +118,11 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Formatage des nombres
+USE_THOUSAND_SEPARATOR = True
+THOUSAND_SEPARATOR = '\u202f'
+NUMBER_GROUPING = 3
+DECIMAL_SEPARATOR = ','
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
